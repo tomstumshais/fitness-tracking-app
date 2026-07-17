@@ -1,0 +1,21 @@
+{
+  "nodeModulesDir": "auto",
+  "tasks": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b",
+    "lint": "deno lint src vite.config.ts vitest.config.ts",
+    "format": "deno fmt",
+    "format:check": "deno fmt --check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "deno task format:check && deno task lint && deno task typecheck && deno task test"
+  },
+  "fmt": {
+    "exclude": ["dist", "coverage", "node_modules"]
+  },
+  "lint": {
+    "exclude": ["dist", "coverage", "node_modules"]
+  }
+}
