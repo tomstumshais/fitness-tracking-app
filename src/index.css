@@ -210,16 +210,17 @@ h1 {
 }
 .event-markers {
   display: flex;
-  min-height: 5px;
+  min-height: 8px;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 4px;
 }
 .event-marker {
-  width: 5px;
-  height: 5px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: #8c86a0;
+  box-shadow: 0 0 0 1px rgba(28, 27, 34, 0.08);
 }
 .event-marker.running {
   background: #1f936b;
@@ -508,6 +509,14 @@ h1 {
   }
   .calendar-day {
     min-height: 74px;
+  }
+  .event-markers {
+    min-height: 10px;
+    gap: 5px;
+  }
+  .event-marker {
+    width: 10px;
+    height: 10px;
   }
 }
 
