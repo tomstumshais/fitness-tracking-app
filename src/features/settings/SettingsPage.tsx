@@ -9,7 +9,7 @@ export function SettingsPage() {
             <h2>Local storage</h2>
             <p>Your fitness data will stay on this device.</p>
           </div>
-          <span className="status-badge">Planned</span>
+          <span className="status-badge active">Active</span>
         </article>
         <article className="settings-row">
           <div>

@@ -1,20 +1,9 @@
-import { configureStore, createSlice } from "@reduxjs/toolkit";
-
-const appSlice = createSlice({
-  name: "app",
-  initialState: { storageReady: false },
-  reducers: {
-    storageLoaded(state) {
-      state.storageReady = true;
-    },
-  },
-});
-
-export const { storageLoaded } = appSlice.actions;
+import { configureStore } from "@reduxjs/toolkit";
+import exercisesReducer from "../features/exercises/exercisesSlice.ts";
 
 export const createAppStore = () =>
   configureStore({
-    reducer: { app: appSlice.reducer },
+    reducer: { exercises: exercisesReducer },
   });
 
 export const store = createAppStore();

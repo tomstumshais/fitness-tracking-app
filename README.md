@@ -51,15 +51,23 @@ Build the GitHub Pages bundle:
 deno task build
 ```
 
-## Planned first version
+## Current functionality
 
-1. Calendar and daily event management
-2. Running, walking, cardio, and resistance event forms
-3. Dumbbell and bodyweight exercise library with custom exercises
-4. In-workout set logging with autosaved drafts
-5. Previous-session and progressive overload comparisons
-6. IndexedDB persistence and JSON backup/restore
-7. Installable offline PWA
+- Monday-first calendar with refresh-safe day routes
+- IndexedDB schema for exercises, completed events, resistance drafts, and
+  settings
+- Curated dumbbell and bodyweight exercise library
+- Search and equipment filters
+- Persistent custom exercise creation, editing, and deletion
+- Mobile navigation and responsive desktop layout
+
+## Remaining first version
+
+1. Daily event management and event forms
+2. In-workout resistance set logging with autosaved drafts
+3. Previous-session and progressive overload comparisons
+4. JSON backup and restore
+5. Installable offline PWA
 
 The application is expected to be published at
 `https://tomstumshais.github.io/fitness-tracking-app/`.
