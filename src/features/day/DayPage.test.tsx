@@ -160,7 +160,7 @@ describe("daily fitness events", () => {
 
     await user.click(within(card).getByRole("button", { name: "Edit" }));
     await user.click(
-      await screen.findByRole("button", { name: "Edit name" }),
+      await screen.findByRole("button", { name: "Edit workout name" }),
     );
     const nameInput = screen.getByRole("textbox", { name: "Workout name" });
     await user.clear(nameInput);

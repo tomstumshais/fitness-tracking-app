@@ -1053,10 +1053,31 @@ h1 {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 4px 8px;
+  gap: 4px 6px;
 }
 .workout-name-action {
-  padding: 0 6px;
+  display: inline-grid;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  color: var(--primary);
+  background: #eeecff;
+}
+.workout-name-action:hover {
+  background: #e2defd;
+}
+.workout-name-action svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
 }
 .workout-count {
   margin: 7px 0 0;
