@@ -4,6 +4,8 @@ import { EmptyState } from "../../components/ui/EmptyState.tsx";
 import { EventFormDialog } from "../events/components/EventFormDialog.tsx";
 import { EventList } from "../events/components/EventList.tsx";
 import { EventTypePicker } from "../events/components/EventTypePicker.tsx";
+import { ResistanceSetupDialog } from "../workouts/components/ResistanceSetupDialog.tsx";
+import { WorkoutDraftList } from "../workouts/components/WorkoutDraftList.tsx";
 import { DayHeader } from "./DayHeader.tsx";
 import { useDayEvents } from "./useDayEvents.ts";
 
@@ -21,6 +23,7 @@ export function DayPage() {
   return (
     <section className="page day-page">
       <DayHeader date={selectedDate} onAdd={() => day.setPickerOpen(true)} />
+      <WorkoutDraftList drafts={day.drafts} />
       {day.status === "loading" && day.events.length === 0 && (
         <p className="loading-state">Loading events…</p>
       )}
@@ -42,6 +45,7 @@ export function DayPage() {
       )}
       {day.events.length > 0 && (
         <EventList
+          allEvents={day.allEvents}
           events={day.events}
           onDelete={day.remove}
           onEdit={day.editEvent}
@@ -50,7 +54,14 @@ export function DayPage() {
       {day.pickerOpen && (
         <EventTypePicker
           onClose={() => day.setPickerOpen(false)}
+          onResistance={day.openResistanceSetup}
           onSelect={day.openForm}
+        />
+      )}
+      {day.resistanceSetupOpen && (
+        <ResistanceSetupDialog
+          onClose={() => day.setResistanceSetupOpen(false)}
+          onStart={day.beginResistanceWorkout}
         />
       )}
       {day.formType && (

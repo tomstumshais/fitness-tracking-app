@@ -2,8 +2,10 @@ import type {
   EditableFitnessEvent,
   FitnessEvent,
 } from "../../../domain/fitness.ts";
+import { ResistanceEventDetails } from "./ResistanceEventDetails.tsx";
 
 interface Props {
+  allEvents: FitnessEvent[];
   event: FitnessEvent;
   onDelete: (event: FitnessEvent) => void;
   onEdit: (event: EditableFitnessEvent) => void;
@@ -22,7 +24,7 @@ function getTitle(event: FitnessEvent) {
   return event.type === "running" ? "Running" : "Walking";
 }
 
-export function EventCard({ event, onDelete, onEdit }: Props) {
+export function EventCard({ allEvents, event, onDelete, onEdit }: Props) {
   const editable = event.type !== "resistance" ? event : null;
   return (
     <article className={`event-card ${event.type}`}>
@@ -56,7 +58,26 @@ export function EventCard({ event, onDelete, onEdit }: Props) {
                 <strong>{event.intensity}</strong> intensity
               </span>
             )}
+          {event.type === "resistance" && (
+            <>
+              <span>
+                <strong>{event.exercises.length}</strong> exercises
+              </span>
+              <span>
+                <strong>
+                  {event.exercises.reduce(
+                    (total, exercise) => total + exercise.sets.length,
+                    0,
+                  )}
+                </strong>{" "}
+                sets
+              </span>
+            </>
+          )}
         </div>
+        {event.type === "resistance" && (
+          <ResistanceEventDetails event={event} events={allEvents} />
+        )}
         {event.notes && <p className="event-notes">{event.notes}</p>}
         <div className="event-actions">
           {editable && (

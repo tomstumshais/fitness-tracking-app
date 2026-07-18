@@ -7,17 +7,23 @@ import {
   loadExercises,
   selectExercisesStatus,
 } from "../features/exercises/exercisesSlice.ts";
+import {
+  loadWorkoutDrafts,
+  selectWorkoutsStatus,
+} from "../features/workouts/workoutsSlice.ts";
 import { useAppDispatch, useAppSelector } from "./hooks.ts";
 
 export function AppBootstrap({ children }: { children: ReactNode }) {
   const dispatch = useAppDispatch();
   const eventStatus = useAppSelector(selectEventsStatus);
   const exerciseStatus = useAppSelector(selectExercisesStatus);
+  const workoutStatus = useAppSelector(selectWorkoutsStatus);
 
   useEffect(() => {
     if (eventStatus === "idle") void dispatch(loadEvents());
     if (exerciseStatus === "idle") void dispatch(loadExercises());
-  }, [dispatch, eventStatus, exerciseStatus]);
+    if (workoutStatus === "idle") void dispatch(loadWorkoutDrafts());
+  }, [dispatch, eventStatus, exerciseStatus, workoutStatus]);
 
   return children;
 }

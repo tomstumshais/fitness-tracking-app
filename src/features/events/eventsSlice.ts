@@ -39,7 +39,9 @@ const eventsSlice = createSlice({
     status: "idle" as "idle" | "loading" | "succeeded" | "failed",
     error: null as string | null,
   }),
-  reducers: {},
+  reducers: {
+    eventUpserted: eventsAdapter.upsertOne,
+  },
   extraReducers(builder) {
     builder
       .addCase(loadEvents.pending, (state) => {
@@ -58,6 +60,8 @@ const eventsSlice = createSlice({
       .addCase(deleteEvent.fulfilled, eventsAdapter.removeOne);
   },
 });
+
+export const { eventUpserted } = eventsSlice.actions;
 
 type StateWithEvents = { events: ReturnType<typeof eventsSlice.reducer> };
 const selectors = eventsAdapter.getSelectors<StateWithEvents>((state) =>

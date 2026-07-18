@@ -101,5 +101,6 @@ export interface ResistanceWorkoutDraft {
   date: string;
   name: string;
   exercises: ResistanceExerciseEntry[];
+  createdAt: string;
   updatedAt: string;
 }

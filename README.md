@@ -59,15 +59,17 @@ deno task build
 - Curated dumbbell and bodyweight exercise library
 - Search and equipment filters
 - Persistent custom exercise creation, editing, and deletion
+- Running, walking, outdoor bicycle, indoor spin bike, and swimming logs
+- Resistance workouts with custom names and autosaved in-progress drafts
+- Set-by-set kg/repetition logging with previous-session values
+- Progressive-overload comparisons by volume or bodyweight repetitions
+- Completed workout cards and calendar activity markers
 - Mobile navigation and responsive desktop layout
 
 ## Remaining first version
 
-1. Daily event management and event forms
-2. In-workout resistance set logging with autosaved drafts
-3. Previous-session and progressive overload comparisons
-4. JSON backup and restore
-5. Installable offline PWA
+1. JSON backup and restore
+2. Installable offline PWA
 
 The application is expected to be published at
 `https://tomstumshais.github.io/fitness-tracking-app/`.

@@ -7,6 +7,7 @@ import { AppBootstrap } from "../../app/AppBootstrap.tsx";
 import { createAppStore } from "../../app/store.ts";
 import { resetDatabaseForTests } from "../../data/database.ts";
 import { DayPage } from "./DayPage.tsx";
+import { WorkoutPage } from "../workouts/WorkoutPage.tsx";
 
 function renderDay() {
   return render(
@@ -15,6 +16,7 @@ function renderDay() {
         <MemoryRouter initialEntries={["/day/2026-07-18"]}>
           <Routes>
             <Route path="day/:date" element={<DayPage />} />
+            <Route path="workout/:draftId" element={<WorkoutPage />} />
           </Routes>
         </MemoryRouter>
       </AppBootstrap>
@@ -34,7 +36,7 @@ describe("daily fitness events", () => {
     const user = userEvent.setup();
     const view = renderDay();
     await user.click(screen.getByRole("button", { name: "+ Add event" }));
-    expect(screen.getByRole("button", { name: /Resistance/ })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /Resistance/ })).toBeEnabled();
     await user.click(screen.getByRole("button", { name: /Running/ }));
     await user.type(
       screen.getByRole("spinbutton", { name: "Duration (minutes)" }),
@@ -100,5 +102,46 @@ describe("daily fitness events", () => {
 
     expect(await screen.findByRole("heading", { name: "Outdoor bicycle" }))
       .toBeInTheDocument();
+  });
+
+  it("logs and completes a resistance workout set by set", async () => {
+    const user = userEvent.setup();
+    renderDay();
+    await user.click(screen.getByRole("button", { name: "+ Add event" }));
+    await user.click(screen.getByRole("button", { name: /Resistance/ }));
+
+    const workoutName = screen.getByRole("textbox", { name: "Workout name" });
+    await user.clear(workoutName);
+    await user.type(workoutName, "Lower body");
+    await user.click(screen.getByRole("button", { name: "Start workout" }));
+    expect(await screen.findByRole("heading", { name: "Lower body" }))
+      .toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", { name: "＋ Add first exercise" }),
+    );
+    await user.type(
+      screen.getByRole("searchbox", { name: "Search workout exercises" }),
+      "Romanian",
+    );
+    await user.click(
+      screen.getByRole("button", { name: /Dumbbell Romanian Deadlift/ }),
+    );
+    await user.type(
+      screen.getByRole("spinbutton", { name: "Set 1 kg per dumbbell" }),
+      "22.5",
+    );
+    await user.type(
+      screen.getByRole("spinbutton", { name: "Set 1 repetitions" }),
+      "8",
+    );
+    await user.click(screen.getByRole("button", { name: "Mark set 1 done" }));
+    await user.click(screen.getByRole("button", { name: "Finish workout" }));
+
+    const card = await screen.findByRole("article");
+    expect(within(card).getByRole("heading", { name: "Lower body" }))
+      .toBeInTheDocument();
+    expect(card).toHaveTextContent("1 exercises");
+    expect(card).toHaveTextContent("1 sets");
   });
 });

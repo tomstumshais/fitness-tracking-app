@@ -6,10 +6,11 @@ import {
 
 interface Props {
   onClose: () => void;
+  onResistance: () => void;
   onSelect: (type: LoggableEventType, activityName?: string) => void;
 }
 
-export function EventTypePicker({ onClose, onSelect }: Props) {
+export function EventTypePicker({ onClose, onResistance, onSelect }: Props) {
   useEffect(() => {
     const closeOnEscape = (event: KeyboardEvent) =>
       event.key === "Escape" && onClose();
@@ -57,15 +58,15 @@ export function EventTypePicker({ onClose, onSelect }: Props) {
           ))}
           <button
             className="event-type-option resistance"
-            disabled
+            onClick={onResistance}
             type="button"
           >
             <span className="event-type-icon">🏋️</span>
             <span>
               <strong>Resistance</strong>
-              <small>Set-by-set logger coming next</small>
+              <small>Log exercises, sets, kg and reps</small>
             </span>
-            <span className="coming-badge">Next</span>
+            <span aria-hidden="true" className="option-arrow">›</span>
           </button>
         </div>
       </section>
