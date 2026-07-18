@@ -1,4 +1,10 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import {
+  cleanup,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -51,6 +57,10 @@ describe("daily fitness events", () => {
       "Evening run",
     );
     await user.click(screen.getByRole("button", { name: "Save event" }));
+    await waitFor(
+      () => expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
+      { timeout: 5_000 },
+    );
 
     const card = screen.getByRole("article");
     expect(within(card).getByRole("heading", { name: "Running" }))
@@ -70,6 +80,10 @@ describe("daily fitness events", () => {
     await user.clear(duration);
     await user.type(duration, "30");
     await user.click(screen.getByRole("button", { name: "Save event" }));
+    await waitFor(
+      () => expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
+      { timeout: 5_000 },
+    );
     expect(screen.getByText("6:00 /km")).toBeInTheDocument();
 
     vi.spyOn(globalThis, "confirm").mockReturnValue(true);
