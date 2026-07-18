@@ -1,12 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   createFitnessBackup,
+  readFitnessBackup,
   restoreFitnessBackup,
 } from "./backupRepository.ts";
 import { getDatabase, resetDatabaseForTests } from "./database.ts";
 import { createFitnessEvent, listFitnessEvents } from "./eventRepository.ts";
 import { createCustomExercise, listExercises } from "./exerciseRepository.ts";
+import { listWorkoutTemplates } from "./templateRepository.ts";
 import { createWorkoutDraft, listWorkoutDrafts } from "./workoutRepository.ts";
+import type { WorkoutTemplate } from "../domain/fitness.ts";
 
 describe("fitness backup repository", () => {
   beforeEach(resetDatabaseForTests);
@@ -26,6 +29,21 @@ describe("fitness backup repository", () => {
     });
     const draft = await createWorkoutDraft("2026-07-19", "Sunday legs");
     const database = await getDatabase();
+    const timestamp = new Date().toISOString();
+    const template: WorkoutTemplate = {
+      id: "template:backup-test",
+      name: "Home legs",
+      exercises: [{
+        id: "template-exercise:backup-test",
+        exerciseId: "dumbbell-goblet-squat",
+        exerciseName: "Dumbbell Goblet Squat",
+        equipment: "dumbbell",
+        setCount: 3,
+      }],
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+    await database.put("workoutTemplates", template);
     await database.put("settings", { key: "example", value: true });
     const backup = await createFitnessBackup();
 
@@ -41,6 +59,7 @@ describe("fitness backup repository", () => {
       distanceKm: 1.5,
     });
     await createWorkoutDraft("2026-07-20", "Replacement draft");
+    await database.clear("workoutTemplates");
     await database.put("settings", { key: "example", value: false });
 
     await restoreFitnessBackup(backup);
@@ -54,6 +73,7 @@ describe("fitness backup repository", () => {
     ]));
     expect(await listFitnessEvents()).toEqual([event]);
     expect(await listWorkoutDrafts()).toEqual([draft]);
+    expect(await listWorkoutTemplates()).toEqual([template]);
     expect(await database.get("settings", "example")).toEqual({
       key: "example",
       value: true,
@@ -72,5 +92,21 @@ describe("fitness backup repository", () => {
       "not a valid Fitness Log backup",
     );
     expect(await listFitnessEvents()).toEqual([event]);
+  });
+
+  it("migrates version 1 backups to the current format", async () => {
+    await createWorkoutDraft("2026-07-19", "Legacy draft");
+    const current = await createFitnessBackup();
+    const { workoutTemplates: _templates, ...legacyData } = current.data;
+
+    const migrated = readFitnessBackup({
+      ...current,
+      version: 1,
+      data: legacyData,
+    });
+
+    expect(migrated.version).toBe(2);
+    expect(migrated.data.workoutTemplates).toEqual([]);
+    expect(migrated.data.workoutDrafts).toHaveLength(1);
   });
 });

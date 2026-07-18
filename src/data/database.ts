@@ -4,11 +4,12 @@ import type {
   FitnessEvent,
   FitnessEventType,
   ResistanceWorkoutDraft,
+  WorkoutTemplate,
 } from "../domain/fitness.ts";
 import { predefinedExercises } from "../features/exercises/predefinedExercises.ts";
 
 const DATABASE_NAME = "fitness-log";
-const DATABASE_VERSION = 1;
+const DATABASE_VERSION = 2;
 
 export interface SettingRecord {
   key: string;
@@ -29,8 +30,9 @@ interface FitnessDatabaseSchema extends DBSchema {
   workoutDrafts: {
     key: string;
     value: ResistanceWorkoutDraft;
-    indexes: { "by-date": string };
+    indexes: { "by-date": string; "by-source-event": string };
   };
+  workoutTemplates: { key: string; value: WorkoutTemplate };
   settings: { key: string; value: SettingRecord };
 }
 
@@ -41,24 +43,33 @@ export function getDatabase() {
     DATABASE_NAME,
     DATABASE_VERSION,
     {
-      upgrade(database) {
-        const exercises = database.createObjectStore("exercises", {
-          keyPath: "id",
-        });
-        exercises.createIndex("by-equipment", "equipment");
-        exercises.createIndex("by-source", "source");
+      upgrade(database, oldVersion, _newVersion, transaction) {
+        if (oldVersion < 1) {
+          const exercises = database.createObjectStore("exercises", {
+            keyPath: "id",
+          });
+          exercises.createIndex("by-equipment", "equipment");
+          exercises.createIndex("by-source", "source");
 
-        const events = database.createObjectStore("fitnessEvents", {
-          keyPath: "id",
-        });
-        events.createIndex("by-date", "date");
-        events.createIndex("by-type", "type");
+          const events = database.createObjectStore("fitnessEvents", {
+            keyPath: "id",
+          });
+          events.createIndex("by-date", "date");
+          events.createIndex("by-type", "type");
 
-        const drafts = database.createObjectStore("workoutDrafts", {
-          keyPath: "id",
-        });
-        drafts.createIndex("by-date", "date");
-        database.createObjectStore("settings", { keyPath: "key" });
+          const drafts = database.createObjectStore("workoutDrafts", {
+            keyPath: "id",
+          });
+          drafts.createIndex("by-date", "date");
+          database.createObjectStore("settings", { keyPath: "key" });
+        }
+        if (oldVersion < 2) {
+          const drafts = transaction.objectStore("workoutDrafts");
+          drafts.createIndex("by-source-event", "sourceEventId", {
+            unique: true,
+          });
+          database.createObjectStore("workoutTemplates", { keyPath: "id" });
+        }
       },
     },
   ).then(async (database) => {

@@ -5,6 +5,7 @@ import { CalendarPage } from "../features/calendar/CalendarPage.tsx";
 import { DayPage } from "../features/day/DayPage.tsx";
 import { ExercisesPage } from "../features/exercises/ExercisesPage.tsx";
 import { SettingsPage } from "../features/settings/SettingsPage.tsx";
+import { TemplatesPage } from "../features/templates/TemplatesPage.tsx";
 import { WorkoutPage } from "../features/workouts/WorkoutPage.tsx";
 
 const currentMonth = format(new Date(), "yyyy-MM");
@@ -21,6 +22,7 @@ export const routes: RouteObject[] = [
       { path: "day/:date", element: <DayPage /> },
       { path: "workout/:draftId", element: <WorkoutPage /> },
       { path: "exercises", element: <ExercisesPage /> },
+      { path: "templates", element: <TemplatesPage /> },
       { path: "settings", element: <SettingsPage /> },
       {
         path: "*",

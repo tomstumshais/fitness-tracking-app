@@ -11,7 +11,11 @@ export function WorkoutDraftList(
         <article className="draft-banner" key={draft.id}>
           <span className="draft-icon">🏋️</span>
           <div>
-            <p className="eyebrow">Workout in progress</p>
+            <p className="eyebrow">
+              {draft.sourceEventId
+                ? "Editing completed workout"
+                : "Workout in progress"}
+            </p>
             <h2>{draft.name}</h2>
             <small>
               {draft.exercises.length}{" "}

@@ -52,7 +52,8 @@ export function BackupPanel({
       </div>
       <p className="backup-note">
         The JSON file includes custom exercises, completed events, workout
-        drafts, and app settings. It is not encrypted, so keep it private.
+        drafts, workout templates, and app settings. It is not encrypted, so
+        keep it private.
       </p>
       {feedback && (
         <p

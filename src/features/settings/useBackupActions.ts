@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { FitnessBackupV1 } from "../../data/backupSchema.ts";
+import type { FitnessBackupV2 } from "../../data/backupSchema.ts";
 import {
   createFitnessBackup,
   readFitnessBackup,
@@ -8,6 +8,7 @@ import {
 import { useAppDispatch } from "../../app/hooks.ts";
 import { loadEvents } from "../events/eventsSlice.ts";
 import { loadExercises } from "../exercises/exercisesSlice.ts";
+import { loadTemplates } from "../templates/templatesSlice.ts";
 import { loadWorkoutDrafts } from "../workouts/workoutsSlice.ts";
 import { downloadFitnessBackup, MAX_BACKUP_FILE_BYTES } from "./backupFile.ts";
 
@@ -20,7 +21,7 @@ function errorMessage(error: unknown) {
 
 export function useBackupActions() {
   const dispatch = useAppDispatch();
-  const [candidate, setCandidate] = useState<FitnessBackupV1 | null>(null);
+  const [candidate, setCandidate] = useState<FitnessBackupV2 | null>(null);
   const [workState, setWorkState] = useState<WorkState>("idle");
   const [feedback, setFeedback] = useState<Feedback>(null);
 
@@ -65,6 +66,7 @@ export function useBackupActions() {
         dispatch(loadExercises()).unwrap(),
         dispatch(loadEvents()).unwrap(),
         dispatch(loadWorkoutDrafts()).unwrap(),
+        dispatch(loadTemplates()).unwrap(),
       ]);
       setCandidate(null);
       setFeedback({

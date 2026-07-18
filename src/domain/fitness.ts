@@ -101,6 +101,23 @@ export interface ResistanceWorkoutDraft {
   date: string;
   name: string;
   exercises: ResistanceExerciseEntry[];
+  sourceEventId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WorkoutTemplateExercise {
+  id: string;
+  exerciseId: string;
+  exerciseName: string;
+  equipment: Equipment;
+  setCount: number;
+}
+
+export interface WorkoutTemplate {
+  id: string;
+  name: string;
+  exercises: WorkoutTemplateExercise[];
   createdAt: string;
   updatedAt: string;
 }

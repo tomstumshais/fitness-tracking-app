@@ -5,8 +5,11 @@ import {
 } from "@reduxjs/toolkit";
 import {
   completeWorkoutDraft,
+  createDraftFromTemplate,
+  createEditDraft,
   createWorkoutDraft,
   deleteWorkoutDraft,
+  duplicateResistanceEvent,
   listWorkoutDrafts,
   saveWorkoutDraft,
 } from "../../data/workoutRepository.ts";
@@ -25,6 +28,21 @@ export const startWorkout = createAsyncThunk(
   "workouts/start",
   ({ date, name }: { date: string; name: string }) =>
     createWorkoutDraft(date, name),
+);
+export const startWorkoutFromTemplate = createAsyncThunk(
+  "workouts/startFromTemplate",
+  ({ date, templateId }: { date: string; templateId: string }) =>
+    createDraftFromTemplate(date, templateId),
+);
+export const editResistanceWorkout = createAsyncThunk(
+  "workouts/editEvent",
+  createEditDraft,
+);
+export const duplicateResistanceWorkout = createAsyncThunk(
+  "workouts/duplicateEvent",
+  (
+    { eventId, date, name }: { eventId: string; date: string; name: string },
+  ) => duplicateResistanceEvent(eventId, date, name),
 );
 export const persistWorkout = createAsyncThunk(
   "workouts/persist",
@@ -66,6 +84,9 @@ const workoutsSlice = createSlice({
         state.error = action.error.message ?? "Could not load workout drafts";
       })
       .addCase(startWorkout.fulfilled, workoutsAdapter.addOne)
+      .addCase(startWorkoutFromTemplate.fulfilled, workoutsAdapter.addOne)
+      .addCase(editResistanceWorkout.fulfilled, workoutsAdapter.upsertOne)
+      .addCase(duplicateResistanceWorkout.fulfilled, workoutsAdapter.addOne)
       .addCase(persistWorkout.fulfilled, workoutsAdapter.upsertOne)
       .addCase(discardWorkout.fulfilled, workoutsAdapter.removeOne)
       .addCase(finishWorkout.fulfilled, workoutsAdapter.removeOne);

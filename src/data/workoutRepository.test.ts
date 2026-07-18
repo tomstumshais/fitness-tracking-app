@@ -4,7 +4,9 @@ import { resetDatabaseForTests } from "./database.ts";
 import { listFitnessEvents } from "./eventRepository.ts";
 import {
   completeWorkoutDraft,
+  createEditDraft,
   createWorkoutDraft,
+  duplicateResistanceEvent,
   listWorkoutDrafts,
   saveWorkoutDraft,
 } from "./workoutRepository.ts";
@@ -52,5 +54,46 @@ describe("resistance workout repository", () => {
       "Complete every set",
     );
     expect(await listWorkoutDrafts()).toHaveLength(1);
+  });
+
+  it("edits a completed event in place and duplicates it as a new draft", async () => {
+    const created = await createWorkoutDraft("2026-07-17", "Upper body");
+    await saveWorkoutDraft({
+      ...created,
+      exercises: [{
+        id: "entry-1",
+        exerciseId: "dumbbell-bench-press",
+        exerciseName: "Dumbbell Bench Press",
+        equipment: "dumbbell",
+        sets: [{
+          id: "set-1",
+          weightKg: 20,
+          repetitions: 10,
+          completed: true,
+        }],
+      }],
+    });
+    const original = (await completeWorkoutDraft(created.id)).event;
+
+    const edit = await createEditDraft(original.id);
+    edit.exercises[0].sets[0].repetitions = 11;
+    await saveWorkoutDraft(edit);
+    const updated = (await completeWorkoutDraft(edit.id)).event;
+    expect(updated.id).toBe(original.id);
+    expect(updated.createdAt).toBe(original.createdAt);
+    expect(updated.exercises[0].sets[0].repetitions).toBe(11);
+
+    const copy = await duplicateResistanceEvent(
+      original.id,
+      "2026-07-18",
+      "Upper body again",
+    );
+    expect(copy.sourceEventId).toBeUndefined();
+    expect(copy.exercises[0].id).not.toBe(original.exercises[0].id);
+    expect(copy.exercises[0].sets[0]).toEqual(expect.objectContaining({
+      weightKg: 20,
+      repetitions: 11,
+      completed: false,
+    }));
   });
 });

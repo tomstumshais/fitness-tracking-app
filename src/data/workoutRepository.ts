@@ -1,11 +1,32 @@
 import type {
   ResistanceEvent,
+  ResistanceExerciseEntry,
+  ResistanceSet,
   ResistanceWorkoutDraft,
 } from "../domain/fitness.ts";
 import { getDatabase } from "./database.ts";
 
 function cleanName(name: string) {
   return name.trim().replace(/\s+/g, " ");
+}
+
+function draftSet(
+  set?: Pick<ResistanceSet, "weightKg" | "repetitions">,
+): ResistanceSet {
+  return {
+    id: crypto.randomUUID(),
+    weightKg: set?.weightKg ?? null,
+    repetitions: set?.repetitions ?? 0,
+    completed: false,
+  };
+}
+
+function copyExercises(exercises: ResistanceExerciseEntry[]) {
+  return exercises.map((exercise) => ({
+    ...exercise,
+    id: crypto.randomUUID(),
+    sets: exercise.sets.map((set) => draftSet(set)),
+  }));
 }
 
 export async function listWorkoutDrafts() {
@@ -31,8 +52,87 @@ export async function createWorkoutDraft(date: string, name: string) {
   return draft;
 }
 
+export async function createDraftFromTemplate(
+  date: string,
+  templateId: string,
+) {
+  const database = await getDatabase();
+  const template = await database.get("workoutTemplates", templateId);
+  if (!template) throw new Error("Workout template not found");
+  const timestamp = new Date().toISOString();
+  const draft: ResistanceWorkoutDraft = {
+    id: `draft:${crypto.randomUUID()}`,
+    date,
+    name: template.name,
+    exercises: template.exercises.map((exercise) => ({
+      id: crypto.randomUUID(),
+      exerciseId: exercise.exerciseId,
+      exerciseName: exercise.exerciseName,
+      equipment: exercise.equipment,
+      sets: Array.from({ length: exercise.setCount }, () => draftSet()),
+    })),
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  };
+  await database.put("workoutDrafts", draft);
+  return draft;
+}
+
+export async function createEditDraft(eventId: string) {
+  const database = await getDatabase();
+  const existingDraft = await database.getFromIndex(
+    "workoutDrafts",
+    "by-source-event",
+    eventId,
+  );
+  if (existingDraft) return existingDraft;
+  const event = await database.get("fitnessEvents", eventId);
+  if (!event || event.type !== "resistance") {
+    throw new Error("Resistance workout not found");
+  }
+  const timestamp = new Date().toISOString();
+  const draft: ResistanceWorkoutDraft = {
+    id: `draft:${crypto.randomUUID()}`,
+    date: event.date,
+    name: event.name,
+    exercises: structuredClone(event.exercises),
+    sourceEventId: event.id,
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  };
+  await database.put("workoutDrafts", draft);
+  return draft;
+}
+
+export async function duplicateResistanceEvent(
+  eventId: string,
+  date: string,
+  name: string,
+) {
+  const database = await getDatabase();
+  const event = await database.get("fitnessEvents", eventId);
+  if (!event || event.type !== "resistance") {
+    throw new Error("Resistance workout not found");
+  }
+  const timestamp = new Date().toISOString();
+  const draft: ResistanceWorkoutDraft = {
+    id: `draft:${crypto.randomUUID()}`,
+    date,
+    name: cleanName(name),
+    exercises: copyExercises(event.exercises),
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  };
+  await database.put("workoutDrafts", draft);
+  return draft;
+}
+
 export async function saveWorkoutDraft(draft: ResistanceWorkoutDraft) {
-  const saved = { ...draft, name: cleanName(draft.name) };
+  const saved = {
+    ...draft,
+    name: cleanName(draft.name),
+    updatedAt: new Date().toISOString(),
+  };
   const database = await getDatabase();
   await database.put("workoutDrafts", saved);
   return saved;
@@ -71,13 +171,19 @@ export async function completeWorkoutDraft(id: string) {
   assertWorkoutComplete(draft);
 
   const timestamp = new Date().toISOString();
+  const source = draft.sourceEventId
+    ? await transaction.objectStore("fitnessEvents").get(draft.sourceEventId)
+    : undefined;
+  if (draft.sourceEventId && (!source || source.type !== "resistance")) {
+    throw new Error("Original resistance workout not found");
+  }
   const event: ResistanceEvent = {
-    id: `event:${crypto.randomUUID()}`,
+    id: source?.id ?? `event:${crypto.randomUUID()}`,
     date: draft.date,
     type: "resistance",
     name: cleanName(draft.name),
     exercises: draft.exercises,
-    createdAt: timestamp,
+    createdAt: source?.createdAt ?? timestamp,
     updatedAt: timestamp,
   };
   await transaction.objectStore("fitnessEvents").put(event);

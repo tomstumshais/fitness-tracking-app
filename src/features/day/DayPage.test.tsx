@@ -155,7 +155,27 @@ describe("daily fitness events", () => {
     const card = await screen.findByRole("article");
     expect(within(card).getByRole("heading", { name: "Lower body" }))
       .toBeInTheDocument();
-    expect(card).toHaveTextContent("1 exercises");
-    expect(card).toHaveTextContent("1 sets");
+    expect(card).toHaveTextContent("1 exercise");
+    expect(card).toHaveTextContent("1 set");
+
+    await user.click(
+      within(card).getByRole("button", { name: "Save as template" }),
+    );
+    expect(screen.getByRole("heading", { name: "Save as template" }))
+      .toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Save template" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+
+    await user.click(screen.getByRole("button", { name: "+ Add event" }));
+    await user.click(screen.getByRole("button", { name: /Resistance/ }));
+    await user.click(screen.getByRole("button", { name: /Lower body.*Start/ }));
+    expect(
+      await screen.findByRole("heading", {
+        name: "Dumbbell Romanian Deadlift",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("spinbutton", { name: "Set 1 kg per dumbbell" }))
+      .toHaveValue(null);
+    expect(screen.getByText("22.5 × 8")).toBeInTheDocument();
   });
 });

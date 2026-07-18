@@ -44,7 +44,10 @@ export function WorkoutPage() {
     }
   };
   const discard = async () => {
-    if (!globalThis.confirm("Discard this workout draft?")) return;
+    const message = draft.sourceEventId
+      ? "Discard these changes? The completed workout will stay unchanged."
+      : "Discard this workout draft?";
+    if (!globalThis.confirm(message)) return;
     await workout.discard();
     navigate(`/day/${draft.date}`);
   };
@@ -53,6 +56,7 @@ export function WorkoutPage() {
     <section className="page workout-page">
       <WorkoutHeader
         date={draft.date}
+        editing={Boolean(draft.sourceEventId)}
         exerciseCount={draft.exercises.length}
         name={draft.name}
         onDiscard={discard}

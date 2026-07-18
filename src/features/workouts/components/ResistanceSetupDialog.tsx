@@ -1,14 +1,23 @@
-import { type FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { WorkoutTemplate } from "../../../domain/fitness.ts";
+import { EmptyWorkoutForm } from "./EmptyWorkoutForm.tsx";
+import { TemplateChoices } from "./TemplateChoices.tsx";
 
 interface Props {
   onClose: () => void;
   onStart: (name: string) => Promise<void>;
+  onStartTemplate: (templateId: string) => Promise<void>;
+  templates: WorkoutTemplate[];
 }
 
-export function ResistanceSetupDialog({ onClose, onStart }: Props) {
-  const [name, setName] = useState("Resistance training");
+export function ResistanceSetupDialog({
+  onClose,
+  onStart,
+  onStartTemplate,
+  templates,
+}: Props) {
   const [error, setError] = useState("");
-  const [starting, setStarting] = useState(false);
+  const [startingTemplate, setStartingTemplate] = useState<string | null>(null);
 
   useEffect(() => {
     const closeOnEscape = (event: KeyboardEvent) =>
@@ -17,21 +26,15 @@ export function ResistanceSetupDialog({ onClose, onStart }: Props) {
     return () => document.removeEventListener("keydown", closeOnEscape);
   }, [onClose]);
 
-  const submit = async (event: FormEvent) => {
-    event.preventDefault();
-    const cleaned = name.trim();
-    if (cleaned.length < 2 || cleaned.length > 60) {
-      setError("Use between 2 and 60 characters");
-      return;
-    }
+  const startTemplate = async (templateId: string) => {
     try {
-      setStarting(true);
-      await onStart(cleaned);
+      setStartingTemplate(templateId);
+      await onStartTemplate(templateId);
     } catch (caught) {
       setError(
-        caught instanceof Error ? caught.message : "Could not start workout",
+        caught instanceof Error ? caught.message : "Could not start template",
       );
-      setStarting(false);
+      setStartingTemplate(null);
     }
   };
 
@@ -46,7 +49,7 @@ export function ResistanceSetupDialog({ onClose, onStart }: Props) {
         <div className="dialog-heading">
           <div>
             <p className="eyebrow">Resistance workout</p>
-            <h2 id="workout-setup-title">Name your workout</h2>
+            <h2 id="workout-setup-title">Start a workout</h2>
           </div>
           <button
             aria-label="Close"
@@ -57,34 +60,13 @@ export function ResistanceSetupDialog({ onClose, onStart }: Props) {
             ×
           </button>
         </div>
-        <form onSubmit={submit}>
-          <label className="form-field">
-            Workout name
-            <input
-              autoFocus
-              maxLength={60}
-              onChange={(event) => setName(event.target.value)}
-              value={name}
-            />
-          </label>
-          {error && <p className="form-error">{error}</p>}
-          <div className="dialog-actions">
-            <button
-              className="secondary-button"
-              onClick={onClose}
-              type="button"
-            >
-              Cancel
-            </button>
-            <button
-              className="primary-button"
-              disabled={starting}
-              type="submit"
-            >
-              {starting ? "Starting…" : "Start workout"}
-            </button>
-          </div>
-        </form>
+        <TemplateChoices
+          onSelect={(id) => void startTemplate(id)}
+          startingId={startingTemplate}
+          templates={templates}
+        />
+        {error && <p className="form-error">{error}</p>}
+        <EmptyWorkoutForm onClose={onClose} onStart={onStart} />
       </section>
     </div>
   );

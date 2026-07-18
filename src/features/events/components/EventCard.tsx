@@ -1,14 +1,19 @@
 import type {
   EditableFitnessEvent,
   FitnessEvent,
+  ResistanceEvent,
 } from "../../../domain/fitness.ts";
+import { EventActions } from "./EventActions.tsx";
 import { ResistanceEventDetails } from "./ResistanceEventDetails.tsx";
 
 interface Props {
   allEvents: FitnessEvent[];
   event: FitnessEvent;
   onDelete: (event: FitnessEvent) => void;
+  onDuplicate: (event: ResistanceEvent) => void;
   onEdit: (event: EditableFitnessEvent) => void;
+  onEditResistance: (event: ResistanceEvent) => void;
+  onSaveTemplate: (event: ResistanceEvent) => void;
 }
 
 const icons = { running: "🏃", walking: "🚶", cardio: "⚡", resistance: "🏋️" };
@@ -24,8 +29,14 @@ function getTitle(event: FitnessEvent) {
   return event.type === "running" ? "Running" : "Walking";
 }
 
-export function EventCard({ allEvents, event, onDelete, onEdit }: Props) {
-  const editable = event.type !== "resistance" ? event : null;
+export function EventCard(props: Props) {
+  const { allEvents, event } = props;
+  const setCount = event.type === "resistance"
+    ? event.exercises.reduce(
+      (total, exercise) => total + exercise.sets.length,
+      0,
+    )
+    : 0;
   return (
     <article className={`event-card ${event.type}`}>
       <div className={`event-card-icon ${event.type}`}>{icons[event.type]}</div>
@@ -61,16 +72,11 @@ export function EventCard({ allEvents, event, onDelete, onEdit }: Props) {
           {event.type === "resistance" && (
             <>
               <span>
-                <strong>{event.exercises.length}</strong> exercises
+                <strong>{event.exercises.length}</strong>{" "}
+                {event.exercises.length === 1 ? "exercise" : "exercises"}
               </span>
               <span>
-                <strong>
-                  {event.exercises.reduce(
-                    (total, exercise) => total + exercise.sets.length,
-                    0,
-                  )}
-                </strong>{" "}
-                sets
+                <strong>{setCount}</strong> {setCount === 1 ? "set" : "sets"}
               </span>
             </>
           )}
@@ -79,18 +85,7 @@ export function EventCard({ allEvents, event, onDelete, onEdit }: Props) {
           <ResistanceEventDetails event={event} events={allEvents} />
         )}
         {event.notes && <p className="event-notes">{event.notes}</p>}
-        <div className="event-actions">
-          {editable && (
-            <button onClick={() => onEdit(editable)} type="button">Edit</button>
-          )}
-          <button
-            className="danger-text"
-            onClick={() => onDelete(event)}
-            type="button"
-          >
-            Delete
-          </button>
-        </div>
+        <EventActions {...props} />
       </div>
     </article>
   );

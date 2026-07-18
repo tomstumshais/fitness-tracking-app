@@ -1,6 +1,7 @@
 import type {
   EditableFitnessEvent,
   FitnessEvent,
+  ResistanceEvent,
 } from "../../../domain/fitness.ts";
 import { EventCard } from "./EventCard.tsx";
 
@@ -8,19 +9,25 @@ interface Props {
   allEvents: FitnessEvent[];
   events: FitnessEvent[];
   onDelete: (event: FitnessEvent) => void;
+  onDuplicate: (event: ResistanceEvent) => void;
   onEdit: (event: EditableFitnessEvent) => void;
+  onEditResistance: (event: ResistanceEvent) => void;
+  onSaveTemplate: (event: ResistanceEvent) => void;
 }
 
-export function EventList({ allEvents, events, onDelete, onEdit }: Props) {
+export function EventList(props: Props) {
   return (
     <div className="event-list" aria-label="Completed fitness events">
-      {events.map((event) => (
+      {props.events.map((event) => (
         <EventCard
-          allEvents={allEvents}
+          allEvents={props.allEvents}
           event={event}
           key={event.id}
-          onDelete={onDelete}
-          onEdit={onEdit}
+          onDelete={props.onDelete}
+          onDuplicate={props.onDuplicate}
+          onEdit={props.onEdit}
+          onEditResistance={props.onEditResistance}
+          onSaveTemplate={props.onSaveTemplate}
         />
       ))}
     </div>

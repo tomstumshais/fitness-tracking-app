@@ -5,7 +5,9 @@ import { EventFormDialog } from "../events/components/EventFormDialog.tsx";
 import { EventList } from "../events/components/EventList.tsx";
 import { EventTypePicker } from "../events/components/EventTypePicker.tsx";
 import { ResistanceSetupDialog } from "../workouts/components/ResistanceSetupDialog.tsx";
+import { DuplicateWorkoutDialog } from "../workouts/components/DuplicateWorkoutDialog.tsx";
 import { WorkoutDraftList } from "../workouts/components/WorkoutDraftList.tsx";
+import { TemplateNameDialog } from "../templates/components/TemplateNameDialog.tsx";
 import { DayHeader } from "./DayHeader.tsx";
 import { useDayEvents } from "./useDayEvents.ts";
 
@@ -48,7 +50,10 @@ export function DayPage() {
           allEvents={day.allEvents}
           events={day.events}
           onDelete={day.remove}
+          onDuplicate={day.setDuplicating}
           onEdit={day.editEvent}
+          onEditResistance={(event) => void day.editResistanceEvent(event)}
+          onSaveTemplate={day.setTemplateSource}
         />
       )}
       {day.pickerOpen && (
@@ -62,6 +67,25 @@ export function DayPage() {
         <ResistanceSetupDialog
           onClose={() => day.setResistanceSetupOpen(false)}
           onStart={day.beginResistanceWorkout}
+          onStartTemplate={day.beginTemplateWorkout}
+          templates={day.templates}
+        />
+      )}
+      {day.duplicating && (
+        <DuplicateWorkoutDialog
+          event={day.duplicating}
+          onClose={() => day.setDuplicating(null)}
+          onDuplicate={day.duplicateWorkout}
+        />
+      )}
+      {day.templateSource && (
+        <TemplateNameDialog
+          defaultName={day.templateSource.name}
+          eyebrow="Reuse this workout"
+          onClose={() => day.setTemplateSource(null)}
+          onSave={day.saveTemplate}
+          submitLabel="Save template"
+          title="Save as template"
         />
       )}
       {day.formType && (

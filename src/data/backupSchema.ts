@@ -3,21 +3,31 @@ import type {
   Exercise,
   FitnessEvent,
   ResistanceWorkoutDraft,
+  WorkoutTemplate,
 } from "../domain/fitness.ts";
 import type { SettingRecord } from "./database.ts";
 
 export const BACKUP_FORMAT = "fitness-log-backup";
-export const BACKUP_VERSION = 1;
+export const BACKUP_VERSION = 2;
 
 export interface FitnessBackupV1 {
   format: typeof BACKUP_FORMAT;
-  version: typeof BACKUP_VERSION;
+  version: 1;
   exportedAt: string;
   data: {
     customExercises: Exercise[];
     fitnessEvents: FitnessEvent[];
     workoutDrafts: ResistanceWorkoutDraft[];
     settings: SettingRecord[];
+  };
+}
+
+export interface FitnessBackupV2 {
+  format: typeof BACKUP_FORMAT;
+  version: typeof BACKUP_VERSION;
+  exportedAt: string;
+  data: FitnessBackupV1["data"] & {
+    workoutTemplates: WorkoutTemplate[];
   };
 }
 
@@ -105,6 +115,23 @@ const workoutDraft = z.object({
   date: calendarDate,
   name,
   exercises: z.array(resistanceExercise).max(200),
+  sourceEventId: identifier.optional(),
+  createdAt: timestamp,
+  updatedAt: timestamp,
+}).strict();
+
+const workoutTemplateExercise = z.object({
+  id: identifier,
+  exerciseId: identifier,
+  exerciseName: name,
+  equipment,
+  setCount: z.number().int().min(1).max(100),
+}).strict();
+
+const workoutTemplate = z.object({
+  id: identifier.startsWith("template:"),
+  name,
+  exercises: z.array(workoutTemplateExercise).min(1).max(200),
   createdAt: timestamp,
   updatedAt: timestamp,
 }).strict();
@@ -151,15 +178,27 @@ function validateResistanceEntries(
   });
 }
 
-export const fitnessBackupSchema: z.ZodType<FitnessBackupV1> = z.object({
+const backupDataV1 = {
+  customExercises: z.array(customExercise).max(5_000),
+  fitnessEvents: z.array(fitnessEvent).max(50_000),
+  workoutDrafts: z.array(workoutDraft).max(5_000),
+  settings: z.array(setting).max(1_000),
+};
+
+const fitnessBackupV1Schema: z.ZodType<FitnessBackupV1> = z.object({
+  format: z.literal(BACKUP_FORMAT),
+  version: z.literal(1),
+  exportedAt: timestamp,
+  data: z.object(backupDataV1).strict(),
+}).strict();
+
+export const fitnessBackupSchema: z.ZodType<FitnessBackupV2> = z.object({
   format: z.literal(BACKUP_FORMAT),
   version: z.literal(BACKUP_VERSION),
   exportedAt: timestamp,
   data: z.object({
-    customExercises: z.array(customExercise).max(5_000),
-    fitnessEvents: z.array(fitnessEvent).max(50_000),
-    workoutDrafts: z.array(workoutDraft).max(5_000),
-    settings: z.array(setting).max(1_000),
+    ...backupDataV1,
+    workoutTemplates: z.array(workoutTemplate).max(5_000),
   }).strict(),
 }).strict().superRefine((backup, context) => {
   requireUniqueIds(backup.data.customExercises, context, [
@@ -173,6 +212,10 @@ export const fitnessBackupSchema: z.ZodType<FitnessBackupV1> = z.object({
   requireUniqueIds(backup.data.workoutDrafts, context, [
     "data",
     "workoutDrafts",
+  ]);
+  requireUniqueIds(backup.data.workoutTemplates, context, [
+    "data",
+    "workoutTemplates",
   ]);
   const settingKeys = new Set<string>();
   backup.data.settings.forEach((setting, index) => {
@@ -190,6 +233,14 @@ export const fitnessBackupSchema: z.ZodType<FitnessBackupV1> = z.object({
     validateResistanceEntries(draft.exercises, context, [
       "data",
       "workoutDrafts",
+      index,
+      "exercises",
+    ]);
+  });
+  backup.data.workoutTemplates.forEach((template, index) => {
+    requireUniqueIds(template.exercises, context, [
+      "data",
+      "workoutTemplates",
       index,
       "exercises",
     ]);
@@ -220,5 +271,16 @@ export const fitnessBackupSchema: z.ZodType<FitnessBackupV1> = z.object({
 });
 
 export function parseFitnessBackup(value: unknown) {
+  if (
+    typeof value === "object" && value !== null && "version" in value &&
+    value.version === 1
+  ) {
+    const backup = fitnessBackupV1Schema.parse(value);
+    return fitnessBackupSchema.parse({
+      ...backup,
+      version: BACKUP_VERSION,
+      data: { ...backup.data, workoutTemplates: [] },
+    });
+  }
   return fitnessBackupSchema.parse(value);
 }

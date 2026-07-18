@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 interface Props {
   date: string;
+  editing: boolean;
   exerciseCount: number;
   name: string;
   onDiscard: () => void;
@@ -14,7 +15,7 @@ export function WorkoutHeader(props: Props) {
   return (
     <>
       <Link className="back-link" to={`/day/${props.date}`}>
-        ← Save and return
+        ← {props.editing ? "Return later" : "Save and return"}
       </Link>
       <div className="workout-page-heading">
         <div>
@@ -33,13 +34,15 @@ export function WorkoutHeader(props: Props) {
           onClick={props.onFinish}
           type="button"
         >
-          Finish workout
+          {props.editing ? "Save changes" : "Finish workout"}
         </button>
       </div>
       <div className="workout-status-row">
         <span>
           {props.ready
-            ? "All sets complete · ready to finish"
+            ? props.editing
+              ? "All sets complete · ready to save"
+              : "All sets complete · ready to finish"
             : "Enter kg/reps and mark every set done · changes save automatically"}
         </span>
         <button
@@ -47,7 +50,7 @@ export function WorkoutHeader(props: Props) {
           onClick={props.onDiscard}
           type="button"
         >
-          Discard workout
+          {props.editing ? "Discard changes" : "Discard workout"}
         </button>
       </div>
     </>

@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import eventsReducer from "../features/events/eventsSlice.ts";
 import exercisesReducer from "../features/exercises/exercisesSlice.ts";
+import templatesReducer from "../features/templates/templatesSlice.ts";
 import workoutsReducer from "../features/workouts/workoutsSlice.ts";
 
 export const createAppStore = () =>
@@ -8,6 +9,7 @@ export const createAppStore = () =>
     reducer: {
       events: eventsReducer,
       exercises: exercisesReducer,
+      templates: templatesReducer,
       workouts: workoutsReducer,
     },
   });

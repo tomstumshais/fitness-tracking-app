@@ -5,6 +5,7 @@ import type {
   EditableFitnessEvent,
   EditableFitnessEventInput,
   FitnessEvent,
+  ResistanceEvent,
 } from "../../domain/fitness.ts";
 import {
   deleteEvent,
@@ -13,8 +14,15 @@ import {
   selectEventsStatus,
 } from "../events/eventsSlice.ts";
 import {
+  saveWorkoutAsTemplate,
+  selectAllTemplates,
+} from "../templates/templatesSlice.ts";
+import {
+  duplicateResistanceWorkout,
+  editResistanceWorkout,
   selectAllWorkoutDrafts,
   startWorkout,
+  startWorkoutFromTemplate,
 } from "../workouts/workoutsSlice.ts";
 
 type LoggableType = "running" | "walking" | "cardio";
@@ -30,6 +38,11 @@ export function useDayEvents(date: string) {
   const [editing, setEditing] = useState<EditableFitnessEvent | null>(null);
   const [activityName, setActivityName] = useState<string>();
   const [resistanceSetupOpen, setResistanceSetupOpen] = useState(false);
+  const [duplicating, setDuplicating] = useState<ResistanceEvent | null>(null);
+  const [templateSource, setTemplateSource] = useState<ResistanceEvent | null>(
+    null,
+  );
+  const templates = useAppSelector(selectAllTemplates);
   const drafts = useAppSelector(selectAllWorkoutDrafts).filter((draft) =>
     draft.date === date
   );
@@ -59,6 +72,35 @@ export function useDayEvents(date: string) {
     setResistanceSetupOpen(false);
     navigate(`/workout/${draft.id}`);
   };
+  const beginTemplateWorkout = async (templateId: string) => {
+    const draft = await dispatch(
+      startWorkoutFromTemplate({ date, templateId }),
+    ).unwrap();
+    setResistanceSetupOpen(false);
+    navigate(`/workout/${draft.id}`);
+  };
+  const editResistanceEvent = async (event: ResistanceEvent) => {
+    const draft = await dispatch(editResistanceWorkout(event.id)).unwrap();
+    navigate(`/workout/${draft.id}`);
+  };
+  const duplicateWorkout = async (targetDate: string, name: string) => {
+    if (!duplicating) return;
+    const draft = await dispatch(duplicateResistanceWorkout({
+      eventId: duplicating.id,
+      date: targetDate,
+      name,
+    })).unwrap();
+    setDuplicating(null);
+    navigate(`/workout/${draft.id}`);
+  };
+  const saveTemplate = async (name: string) => {
+    if (!templateSource) return;
+    await dispatch(saveWorkoutAsTemplate({
+      eventId: templateSource.id,
+      name,
+    })).unwrap();
+    setTemplateSource(null);
+  };
   const save = async (input: EditableFitnessEventInput) => {
     await dispatch(saveEvent({ id: editing?.id, input })).unwrap();
     closeForm();
@@ -73,10 +115,14 @@ export function useDayEvents(date: string) {
     activityName,
     allEvents,
     beginResistanceWorkout,
+    beginTemplateWorkout,
     closeForm,
     drafts,
+    duplicateWorkout,
+    duplicating,
     editing,
     editEvent,
+    editResistanceEvent,
     events,
     formType,
     openForm,
@@ -85,8 +131,13 @@ export function useDayEvents(date: string) {
     remove,
     resistanceSetupOpen,
     save,
+    saveTemplate,
     setPickerOpen,
     setResistanceSetupOpen,
+    setDuplicating,
+    setTemplateSource,
     status,
+    templateSource,
+    templates,
   };
 }

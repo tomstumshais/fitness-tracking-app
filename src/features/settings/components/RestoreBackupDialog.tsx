@@ -1,9 +1,9 @@
 import { format } from "date-fns";
-import type { FitnessBackupV1 } from "../../../data/backupSchema.ts";
+import type { FitnessBackupV2 } from "../../../data/backupSchema.ts";
 import { summarizeBackup } from "../../../data/backupRepository.ts";
 
 interface RestoreBackupDialogProps {
-  backup: FitnessBackupV1;
+  backup: FitnessBackupV2;
   restoring: boolean;
   onCancel: () => void;
   onConfirm: () => void;
@@ -55,6 +55,10 @@ export function RestoreBackupDialog({
           <div>
             <dt>Workout drafts</dt>
             <dd>{summary.workoutDrafts}</dd>
+          </div>
+          <div>
+            <dt>Workout templates</dt>
+            <dd>{summary.workoutTemplates}</dd>
           </div>
         </dl>
         <p className="restore-warning" id="restore-warning">

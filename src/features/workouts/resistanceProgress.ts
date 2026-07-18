@@ -13,6 +13,7 @@ export function findPreviousExercise(
   return events
     .filter((event) =>
       event.type === "resistance" &&
+      event.id !== draft.sourceEventId &&
       (event.date < draft.date ||
         (event.date === draft.date && event.createdAt < draft.createdAt))
     )

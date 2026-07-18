@@ -11,9 +11,14 @@ comparisons.
 - Stores personal fitness data in the browser; no backend is required for
   version one.
 - Uses permanent exercise identities so historical progress remains comparable.
+- Gives persisted fitness records stable IDs plus creation/update timestamps.
 - Records dumbbell weight in kilograms per dumbbell.
 - Supports multiple completed fitness events per day.
 - Keeps components focused and generally below 100 lines.
+- Keeps persistence behind repositories and feature state, separate from UI
+  components.
+- Keeps templates, future analytics, and future synchronization as independent
+  feature modules, ready for a centralized entitlement layer if needed later.
 
 ## Technology
 
@@ -54,17 +59,21 @@ deno task build
 ## Current functionality
 
 - Monday-first calendar with refresh-safe day routes
-- IndexedDB schema for exercises, completed events, resistance drafts, and
-  settings
+- Migratable IndexedDB schema for exercises, completed events, resistance
+  drafts, workout templates, and settings
 - Curated dumbbell and bodyweight exercise library
 - Search and equipment filters
 - Persistent custom exercise creation, editing, and deletion
 - Running, walking, outdoor bicycle, indoor spin bike, and swimming logs
 - Resistance workouts with custom names and autosaved in-progress drafts
+- Reusable resistance workout templates with exercise order and set counts
+- Editing completed resistance workouts without changing their stable identity
+- Duplicating a completed workout into a new editable, incomplete draft
 - Set-by-set kg/repetition logging with previous-session values
 - Progressive-overload comparisons by volume or bodyweight repetitions
 - Completed workout cards and calendar activity markers
-- Versioned JSON backup and validated, atomic restore of local user data
+- Versioned JSON backup with backward migration and validated, atomic restore of
+  local user data, including templates
 - Installable home-screen PWA with an offline-cached application shell
 - Mobile navigation and responsive desktop layout
 
