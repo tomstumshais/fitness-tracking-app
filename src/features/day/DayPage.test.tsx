@@ -114,7 +114,7 @@ describe("daily fitness events", () => {
     await user.clear(workoutName);
     await user.type(workoutName, "Lower body");
     await user.click(screen.getByRole("button", { name: "Start workout" }));
-    expect(await screen.findByRole("heading", { name: "Lower body" }))
+    expect(await screen.findByRole("heading", { name: "Lower body", level: 1 }))
       .toBeInTheDocument();
 
     await user.click(
