@@ -40,7 +40,7 @@ export function DayPage() {
               Log your first event
             </button>
           }
-          description="Running, walking, cardio and resistance workouts will appear here."
+          description="Running, walking and resistance workouts will appear here."
           icon="＋"
           title="No activity logged"
         />
