@@ -329,6 +329,61 @@ h1 {
   color: var(--muted);
   font-size: 0.85rem;
 }
+.backup-panel {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.backup-panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+.backup-panel h2 {
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+.backup-panel-heading p, .backup-note {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.backup-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+}
+.file-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.file-button:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+.backup-note {
+  margin-top: 14px;
+}
+.backup-feedback {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+.backup-feedback.success {
+  color: #176b50;
+  background: #e4f7ef;
+}
+.backup-feedback.error {
+  color: #b42318;
+  background: #fff0ee;
+}
 .status-badge {
   padding: 6px 9px;
   border-radius: 999px;
@@ -340,6 +395,45 @@ h1 {
 .status-badge.active {
   color: #176b50;
   background: #e4f7ef;
+}
+
+.restore-date {
+  margin-bottom: 16px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.backup-summary {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  margin: 0 0 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--border);
+}
+.backup-summary div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 13px 14px;
+  background: var(--surface);
+}
+.backup-summary dt {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.backup-summary dd {
+  margin: 0;
+  font-weight: 750;
+}
+.restore-warning {
+  margin-bottom: 0;
+  padding: 14px;
+  border-radius: 12px;
+  color: #7a2e0e;
+  background: #fff3e8;
+  font-size: 0.84rem;
+  line-height: 1.55;
 }
 
 @media (min-width: 760px) {
@@ -1169,6 +1263,9 @@ h1 {
 }
 
 @media (min-width: 600px) {
+  .backup-actions {
+    grid-template-columns: max-content max-content;
+  }
   .exercise-tools {
     grid-template-columns: minmax(240px, 1fr) auto;
     align-items: center;

@@ -10,7 +10,7 @@ import { predefinedExercises } from "../features/exercises/predefinedExercises.t
 const DATABASE_NAME = "fitness-log";
 const DATABASE_VERSION = 1;
 
-interface SettingRecord {
+export interface SettingRecord {
   key: string;
   value: unknown;
 }
