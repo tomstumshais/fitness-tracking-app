@@ -23,19 +23,23 @@ export function useDayEvents(date: string) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [formType, setFormType] = useState<LoggableType | null>(null);
   const [editing, setEditing] = useState<EditableFitnessEvent | null>(null);
+  const [activityName, setActivityName] = useState<string>();
 
-  const openForm = (type: LoggableType) => {
+  const openForm = (type: LoggableType, selectedActivity?: string) => {
     setPickerOpen(false);
     setEditing(null);
+    setActivityName(selectedActivity);
     setFormType(type);
   };
   const editEvent = (event: EditableFitnessEvent) => {
     setEditing(event);
+    setActivityName(event.type === "cardio" ? event.name : undefined);
     setFormType(event.type);
   };
   const closeForm = () => {
     setFormType(null);
     setEditing(null);
+    setActivityName(undefined);
   };
   const save = async (input: EditableFitnessEventInput) => {
     await dispatch(saveEvent({ id: editing?.id, input })).unwrap();
@@ -48,6 +52,7 @@ export function useDayEvents(date: string) {
   };
 
   return {
+    activityName,
     closeForm,
     editing,
     editEvent,

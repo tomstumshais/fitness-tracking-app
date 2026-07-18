@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -24,9 +24,10 @@ function renderDay() {
 
 describe("daily fitness events", () => {
   beforeEach(resetDatabaseForTests);
-  afterEach(() => {
+  afterEach(async () => {
+    cleanup();
     vi.restoreAllMocks();
-    return resetDatabaseForTests();
+    await resetDatabaseForTests();
   });
 
   it("adds, persists, edits and deletes a completed run", async () => {
@@ -72,5 +73,32 @@ describe("daily fitness events", () => {
     vi.spyOn(globalThis, "confirm").mockReturnValue(true);
     await user.click(screen.getByRole("button", { name: "Delete" }));
     expect(await screen.findByText("No activity logged")).toBeInTheDocument();
+  });
+
+  it("offers the requested cardio activities and prefills the selection", async () => {
+    const user = userEvent.setup();
+    renderDay();
+    await user.click(screen.getByRole("button", { name: "+ Add event" }));
+
+    expect(screen.getByRole("button", { name: /Running/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Walking/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Indoor spin bike/ }))
+      .toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Swimming/ }))
+      .toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /Outdoor bicycle/ }));
+
+    expect(screen.getByRole("heading", { name: "Log Outdoor bicycle" }))
+      .toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: "Activity type" }))
+      .toHaveValue("Outdoor bicycle");
+    await user.type(
+      screen.getByRole("spinbutton", { name: "Duration (minutes)" }),
+      "40",
+    );
+    await user.click(screen.getByRole("button", { name: "Save event" }));
+
+    expect(await screen.findByRole("heading", { name: "Outdoor bicycle" }))
+      .toBeInTheDocument();
   });
 });

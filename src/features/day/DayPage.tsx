@@ -55,6 +55,7 @@ export function DayPage() {
       )}
       {day.formType && (
         <EventFormDialog
+          activityName={day.activityName}
           date={date}
           event={day.editing}
           onClose={day.closeForm}

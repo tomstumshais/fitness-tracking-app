@@ -48,9 +48,10 @@ export function validateEventForm(
 
 export function eventToFormValues(
   event: EditableFitnessEvent | null,
+  activityName = "Outdoor bicycle",
 ): EventFormValues {
   return {
-    name: event?.type === "cardio" ? event.name : "",
+    name: event?.type === "cardio" ? event.name : activityName,
     durationMinutes: event?.durationMinutes ?? Number.NaN,
     distanceKm: event?.type !== "cardio"
       ? event?.distanceKm ?? Number.NaN

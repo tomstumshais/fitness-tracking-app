@@ -1,4 +1,5 @@
 import type { UseFormReturn } from "react-hook-form";
+import { timedCardioActivities } from "../cardioActivities.ts";
 import type { EventFormValues } from "../eventForm.ts";
 
 interface Props {
@@ -8,12 +9,23 @@ interface Props {
 
 export function EventFormFields({ form, type }: Props) {
   const { register, formState: { errors } } = form;
+  const currentActivity = form.watch("name");
+  const isLegacyActivity = currentActivity && !timedCardioActivities.some(
+    (activity) => activity === currentActivity,
+  );
   return (
     <>
       {type === "cardio" && (
         <label className="form-field">
-          Activity name
-          <input autoFocus {...register("name")} placeholder="Example: HIIT" />
+          Activity type
+          <select autoFocus {...register("name")}>
+            {isLegacyActivity && (
+              <option value={currentActivity}>{currentActivity}</option>
+            )}
+            {timedCardioActivities.map((activity) => (
+              <option key={activity} value={activity}>{activity}</option>
+            ))}
+          </select>
           {errors.name && (
             <span className="field-error">{errors.name.message}</span>
           )}

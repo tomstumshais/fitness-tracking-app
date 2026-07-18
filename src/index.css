@@ -687,6 +687,15 @@ h1 {
 .event-type-option.cardio .event-type-icon {
   background: #fff0e5;
 }
+.event-type-option.cycling .event-type-icon {
+  background: #e4f7ef;
+}
+.event-type-option.spinning .event-type-icon {
+  background: #eeebff;
+}
+.event-type-option.swimming .event-type-icon {
+  background: #e8f2ff;
+}
 .event-type-option.resistance .event-type-icon {
   background: #eeebff;
 }

@@ -1,32 +1,13 @@
 import { useEffect } from "react";
-
-type LoggableEventType = "running" | "walking" | "cardio";
+import {
+  eventPickerOptions,
+  type LoggableEventType,
+} from "../cardioActivities.ts";
 
 interface Props {
   onClose: () => void;
-  onSelect: (type: LoggableEventType) => void;
+  onSelect: (type: LoggableEventType, activityName?: string) => void;
 }
-
-const options = [
-  {
-    type: "running" as const,
-    icon: "🏃",
-    title: "Running",
-    description: "Log distance, duration and pace",
-  },
-  {
-    type: "walking" as const,
-    icon: "🚶",
-    title: "Walking",
-    description: "Log distance, duration and pace",
-  },
-  {
-    type: "cardio" as const,
-    icon: "⚡",
-    title: "Cardio",
-    description: "Log a completed cardio session",
-  },
-];
 
 export function EventTypePicker({ onClose, onSelect }: Props) {
   useEffect(() => {
@@ -59,11 +40,11 @@ export function EventTypePicker({ onClose, onSelect }: Props) {
           </button>
         </div>
         <div className="event-type-grid">
-          {options.map((option) => (
+          {eventPickerOptions.map((option) => (
             <button
-              className={`event-type-option ${option.type}`}
-              key={option.type}
-              onClick={() => onSelect(option.type)}
+              className={`event-type-option ${option.tone}`}
+              key={option.title}
+              onClick={() => onSelect(option.type, option.activityName)}
               type="button"
             >
               <span className="event-type-icon">{option.icon}</span>

@@ -12,6 +12,7 @@ import {
 } from "./eventForm.ts";
 
 interface FormOptions {
+  activityName?: string;
   date: string;
   event: EditableFitnessEvent | null;
   onSave: (input: EditableFitnessEventInput) => Promise<void>;
@@ -20,12 +21,12 @@ interface FormOptions {
 
 export function useEventForm(options: FormOptions) {
   const form = useForm<EventFormValues>({
-    defaultValues: eventToFormValues(options.event),
+    defaultValues: eventToFormValues(options.event, options.activityName),
   });
 
   useEffect(() => {
-    form.reset(eventToFormValues(options.event));
-  }, [form.reset, options.event, options.type]);
+    form.reset(eventToFormValues(options.event, options.activityName));
+  }, [form.reset, options.activityName, options.event, options.type]);
 
   const submit = form.handleSubmit(async (values) => {
     const result = validateEventForm(options.type, values);

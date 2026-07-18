@@ -7,6 +7,7 @@ import { useEventForm } from "../useEventForm.ts";
 import { EventFormFields } from "./EventFormFields.tsx";
 
 interface Props {
+  activityName?: string;
   date: string;
   event: EditableFitnessEvent | null;
   onClose: () => void;
@@ -39,8 +40,16 @@ export function EventFormDialog(props: Props) {
             <p className="eyebrow">Completed activity</p>
             <h2 id="event-dialog-title">
               {props.event
-                ? `Edit ${labels[props.type]}`
-                : `Log ${labels[props.type]}`}
+                ? `Edit ${
+                  props.event.type === "cardio"
+                    ? props.event.name
+                    : labels[props.type]
+                }`
+                : `Log ${
+                  props.type === "cardio"
+                    ? props.activityName ?? labels.cardio
+                    : labels[props.type]
+                }`}
             </h2>
           </div>
           <button
