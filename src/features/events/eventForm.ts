@@ -48,7 +48,7 @@ export function validateEventForm(
 
 export function eventToFormValues(
   event: EditableFitnessEvent | null,
-  activityName = "Outdoor bicycle",
+  activityName = "Outdoor cycling",
 ): EventFormValues {
   return {
     name: event?.type === "cardio" ? event.name : activityName,

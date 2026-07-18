@@ -1,8 +1,6 @@
-export const timedCardioActivities = [
-  "Outdoor bicycle",
-  "Indoor spin bike",
-  "Swimming",
-] as const;
+import { timedActivityNames } from "../../domain/activityNames.ts";
+
+export const timedCardioActivities = timedActivityNames;
 
 export type LoggableEventType = "running" | "walking" | "cardio";
 
@@ -23,17 +21,17 @@ export const eventPickerOptions = [
   },
   {
     type: "cardio" as const,
-    activityName: "Outdoor bicycle",
+    activityName: "Outdoor cycling",
     icon: "🚴",
-    title: "Outdoor bicycle",
+    title: "Outdoor cycling",
     description: "Log duration and intensity",
     tone: "cycling",
   },
   {
     type: "cardio" as const,
-    activityName: "Indoor spin bike",
+    activityName: "Indoor cycling",
     icon: "🚲",
-    title: "Indoor spin bike",
+    title: "Indoor cycling",
     description: "Log duration and intensity",
     tone: "spinning",
   },
@@ -45,4 +43,18 @@ export const eventPickerOptions = [
     description: "Log duration and intensity",
     tone: "swimming",
   },
+  {
+    type: "cardio" as const,
+    activityName: "Physiotherapy",
+    icon: "🩺",
+    title: "Physiotherapy",
+    description: "Log duration and intensity",
+    tone: "physiotherapy",
+  },
 ];
+
+export function getActivityIcon(name: string) {
+  return eventPickerOptions.find((option) =>
+    option.type === "cardio" && option.activityName === name
+  )?.icon ?? "⚡";
+}

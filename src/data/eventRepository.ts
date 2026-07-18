@@ -3,6 +3,7 @@ import type {
   EditableFitnessEventInput,
   FitnessEvent,
 } from "../domain/fitness.ts";
+import { normalizeActivityName } from "../domain/activityNames.ts";
 import { getDatabase } from "./database.ts";
 
 function cleanOptionalText(value?: string) {
@@ -33,7 +34,7 @@ function buildEvent(
     ? {
       ...input,
       ...metadata,
-      name: input.name.trim().replace(/\s+/g, " "),
+      name: normalizeActivityName(input.name.trim().replace(/\s+/g, " ")),
     }
     : { ...input, ...metadata };
 }

@@ -6,10 +6,12 @@ import type {
   ResistanceWorkoutDraft,
   WorkoutTemplate,
 } from "../domain/fitness.ts";
+import { normalizeEventActivityName } from "./activityNameMigration.ts";
 import { predefinedExercises } from "../features/exercises/predefinedExercises.ts";
 
 const DATABASE_NAME = "fitness-log";
-const DATABASE_VERSION = 2;
+const DATABASE_VERSION = 3;
+const ACTIVITY_NAME_MIGRATION_KEY = "migration:3:activity-names";
 
 export interface SettingRecord {
   key: string;
@@ -37,6 +39,27 @@ interface FitnessDatabaseSchema extends DBSchema {
 }
 
 let databasePromise: Promise<IDBPDatabase<FitnessDatabaseSchema>> | undefined;
+
+async function migrateActivityNames(
+  database: IDBPDatabase<FitnessDatabaseSchema>,
+) {
+  const transaction = database.transaction(
+    ["fitnessEvents", "settings"],
+    "readwrite",
+  );
+  const settings = transaction.objectStore("settings");
+  if (!await settings.get(ACTIVITY_NAME_MIGRATION_KEY)) {
+    const events = transaction.objectStore("fitnessEvents");
+    const timestamp = new Date().toISOString();
+    await Promise.all(
+      (await events.getAll()).map((event) =>
+        events.put(normalizeEventActivityName(event, timestamp))
+      ),
+    );
+    await settings.put({ key: ACTIVITY_NAME_MIGRATION_KEY, value: true });
+  }
+  await transaction.done;
+}
 
 export function getDatabase() {
   databasePromise ??= openDB<FitnessDatabaseSchema>(
@@ -78,6 +101,7 @@ export function getDatabase() {
       predefinedExercises.map((item) => transaction.store.put(item)),
     );
     await transaction.done;
+    await migrateActivityNames(database);
     return database;
   });
 

@@ -3,6 +3,7 @@ import type {
   FitnessEvent,
   ResistanceEvent,
 } from "../../../domain/fitness.ts";
+import { getActivityIcon } from "../cardioActivities.ts";
 import { EventActions } from "./EventActions.tsx";
 import { ResistanceEventDetails } from "./ResistanceEventDetails.tsx";
 
@@ -16,7 +17,7 @@ interface Props {
   onSaveTemplate: (event: ResistanceEvent) => void;
 }
 
-const icons = { running: "🏃", walking: "🚶", cardio: "⚡", resistance: "🏋️" };
+const icons = { running: "🏃", walking: "🚶", resistance: "🏋️" };
 
 function formatPace(durationMinutes: number, distanceKm: number) {
   const totalSeconds = Math.round(durationMinutes * 60 / distanceKm);
@@ -29,6 +30,16 @@ function getTitle(event: FitnessEvent) {
   return event.type === "running" ? "Running" : "Walking";
 }
 
+function getIcon(event: FitnessEvent) {
+  return event.type === "cardio"
+    ? getActivityIcon(event.name)
+    : icons[event.type];
+}
+
+function getKind(event: FitnessEvent) {
+  return event.type === "cardio" ? "activity" : event.type;
+}
+
 export function EventCard(props: Props) {
   const { allEvents, event } = props;
   const setCount = event.type === "resistance"
@@ -39,11 +50,11 @@ export function EventCard(props: Props) {
     : 0;
   return (
     <article className={`event-card ${event.type}`}>
-      <div className={`event-card-icon ${event.type}`}>{icons[event.type]}</div>
+      <div className={`event-card-icon ${event.type}`}>{getIcon(event)}</div>
       <div className="event-card-content">
         <div className="event-card-heading">
           <h2>{getTitle(event)}</h2>
-          <span className={`event-kind ${event.type}`}>{event.type}</span>
+          <span className={`event-kind ${event.type}`}>{getKind(event)}</span>
         </div>
         <div className="event-metrics">
           {event.durationMinutes && (

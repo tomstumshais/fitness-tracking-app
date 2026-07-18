@@ -847,6 +847,9 @@ h1 {
 .event-type-option.swimming .event-type-icon {
   background: #e8f2ff;
 }
+.event-type-option.physiotherapy .event-type-icon {
+  background: #f6eafa;
+}
 .event-type-option.resistance .event-type-icon {
   background: #eeebff;
 }

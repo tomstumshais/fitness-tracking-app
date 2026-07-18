@@ -27,10 +27,20 @@ describe("database migrations", () => {
       },
     });
     await legacy.put("settings", { key: "legacy", value: true });
+    await legacy.put("fitnessEvents", {
+      id: "event:legacy-cycling",
+      date: "2026-07-18",
+      type: "cardio",
+      name: "Indoor spin bike",
+      durationMinutes: 30,
+      intensity: "moderate",
+      createdAt: "2026-07-18T10:00:00.000Z",
+      updatedAt: "2026-07-18T10:00:00.000Z",
+    });
     legacy.close();
 
     const upgraded = await getDatabase();
-    expect(upgraded.version).toBe(2);
+    expect(upgraded.version).toBe(3);
     expect(upgraded.objectStoreNames.contains("workoutTemplates")).toBe(true);
     const drafts = upgraded.transaction("workoutDrafts").store;
     expect(drafts.indexNames.contains("by-source-event")).toBe(true);
@@ -39,5 +49,7 @@ describe("database migrations", () => {
       key: "legacy",
       value: true,
     });
+    expect(await upgraded.get("fitnessEvents", "event:legacy-cycling"))
+      .toEqual(expect.objectContaining({ name: "Indoor cycling" }));
   });
 });

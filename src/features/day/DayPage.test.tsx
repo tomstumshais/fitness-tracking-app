@@ -98,24 +98,29 @@ describe("daily fitness events", () => {
 
     expect(screen.getByRole("button", { name: /Running/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Walking/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Indoor spin bike/ }))
+    expect(screen.getByRole("button", { name: /Indoor cycling/ }))
+      .toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Outdoor cycling/ }))
       .toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Swimming/ }))
       .toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /Outdoor bicycle/ }));
+    await user.click(screen.getByRole("button", { name: /Physiotherapy/ }));
 
-    expect(screen.getByRole("heading", { name: "Log Outdoor bicycle" }))
+    expect(screen.getByRole("heading", { name: "Log Physiotherapy" }))
       .toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: "Activity type" }))
-      .toHaveValue("Outdoor bicycle");
+      .toHaveValue("Physiotherapy");
     await user.type(
       screen.getByRole("spinbutton", { name: "Duration (minutes)" }),
       "40",
     );
     await user.click(screen.getByRole("button", { name: "Save event" }));
 
-    expect(await screen.findByRole("heading", { name: "Outdoor bicycle" }))
+    const card = await screen.findByRole("article");
+    expect(within(card).getByRole("heading", { name: "Physiotherapy" }))
       .toBeInTheDocument();
+    expect(card).toHaveTextContent("activity");
+    expect(card).not.toHaveTextContent("cardio");
   });
 
   it("logs and completes a resistance workout set by set", async () => {

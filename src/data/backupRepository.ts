@@ -1,5 +1,6 @@
 import { ZodError } from "zod";
 import { predefinedExercises } from "../features/exercises/predefinedExercises.ts";
+import { normalizeEventActivityName } from "./activityNameMigration.ts";
 import {
   BACKUP_FORMAT,
   BACKUP_VERSION,
@@ -111,7 +112,9 @@ export async function restoreFitnessBackup(value: unknown) {
   await Promise.all([
     ...backup.data.customExercises.map((exercise) => exercises.put(exercise)),
     ...backup.data.fitnessEvents.map((event) =>
-      transaction.objectStore("fitnessEvents").put(event)
+      transaction.objectStore("fitnessEvents").put(
+        normalizeEventActivityName(event),
+      )
     ),
     ...backup.data.workoutDrafts.map((draft) =>
       transaction.objectStore("workoutDrafts").put(draft)

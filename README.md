@@ -64,7 +64,8 @@ deno task build
 - Curated dumbbell and bodyweight exercise library
 - Search and equipment filters
 - Persistent custom exercise creation, editing, and deletion
-- Running, walking, outdoor bicycle, indoor spin bike, and swimming logs
+- Running, walking, outdoor cycling, indoor cycling, swimming, and physiotherapy
+  logs
 - Resistance workouts with custom names and autosaved in-progress drafts
 - Reusable resistance workout templates with exercise order and set counts
 - Editing completed resistance workouts without changing their stable identity

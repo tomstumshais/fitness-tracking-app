@@ -59,5 +59,15 @@ describe("fitness event repository", () => {
 
     if (cardio.type !== "cardio") throw new Error("Expected a cardio event");
     expect(cardio.name).toBe("Dumbbell circuit");
+
+    const cycling = await createFitnessEvent({
+      type: "cardio",
+      date: "2026-07-19",
+      name: "Outdoor bicycle",
+      durationMinutes: 40,
+      intensity: "moderate",
+    });
+    if (cycling.type !== "cardio") throw new Error("Expected a cardio event");
+    expect(cycling.name).toBe("Outdoor cycling");
   });
 });

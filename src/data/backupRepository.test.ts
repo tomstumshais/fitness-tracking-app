@@ -109,4 +109,24 @@ describe("fitness backup repository", () => {
     expect(migrated.data.workoutTemplates).toEqual([]);
     expect(migrated.data.workoutDrafts).toHaveLength(1);
   });
+
+  it("renames legacy cycling activities when restoring a backup", async () => {
+    const backup = await createFitnessBackup();
+    backup.data.fitnessEvents.push({
+      id: "event:legacy-cycling-backup",
+      date: "2026-07-18",
+      type: "cardio",
+      name: "Outdoor bicycle",
+      durationMinutes: 45,
+      intensity: "moderate",
+      createdAt: "2026-07-18T10:00:00.000Z",
+      updatedAt: "2026-07-18T10:00:00.000Z",
+    });
+
+    await restoreFitnessBackup(backup);
+
+    expect(await listFitnessEvents()).toEqual([
+      expect.objectContaining({ name: "Outdoor cycling" }),
+    ]);
+  });
 });
