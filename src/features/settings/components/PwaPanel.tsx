@@ -70,8 +70,15 @@ export function PwaPanel({
           </p>
         )}
       <p className="pwa-note">
-        Visit once while online so the latest version is available offline.
+        After installing, open the app once while online so the latest version
+        is available offline.
       </p>
+      {isIos && !installed && (
+        <p className="pwa-storage-note">
+          Already have entries in Safari? Download a backup first, then restore
+          it in the installed app if it opens empty.
+        </p>
+      )}
     </article>
   );
 }

@@ -351,7 +351,7 @@ h1 {
   margin-bottom: 4px;
   font-size: 1rem;
 }
-.pwa-panel-heading p, .pwa-note, .install-message {
+.pwa-panel-heading p, .pwa-note, .pwa-storage-note, .install-message {
   margin-bottom: 0;
   color: var(--muted);
   font-size: 0.85rem;
@@ -375,6 +375,11 @@ h1 {
 }
 .pwa-note {
   margin-top: 14px;
+}
+.pwa-storage-note {
+  margin: 12px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
 }
 .backup-panel-heading {
   display: flex;

@@ -21,5 +21,6 @@ describe("PWA settings panel", () => {
       .toBeInTheDocument();
     expect(screen.getByText("Turn on “Open as Web App”, then tap Add."))
       .toBeInTheDocument();
+    expect(screen.getByText(/Download a backup first/)).toBeInTheDocument();
   });
 });
