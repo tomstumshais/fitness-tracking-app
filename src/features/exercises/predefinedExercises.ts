@@ -47,6 +47,12 @@ export const predefinedExercises: Exercise[] = [
   ),
   exercise("dumbbell-floor-press", "Dumbbell Floor Press", "dumbbell", "chest"),
   exercise("dumbbell-bench-press", "Dumbbell Bench Press", "dumbbell", "chest"),
+  exercise(
+    "incline-dumbbell-press",
+    "Incline Dumbbell Press",
+    "dumbbell",
+    "chest",
+  ),
   exercise("dumbbell-pullover", "Dumbbell Pullover", "dumbbell", "chest"),
   exercise(
     "dumbbell-shoulder-press",
