@@ -158,8 +158,22 @@ describe("daily fitness events", () => {
     expect(card).toHaveTextContent("1 exercise");
     expect(card).toHaveTextContent("1 set");
 
+    await user.click(within(card).getByRole("button", { name: "Edit" }));
     await user.click(
-      within(card).getByRole("button", { name: "Save as template" }),
+      await screen.findByRole("button", { name: "Edit name" }),
+    );
+    const nameInput = screen.getByRole("textbox", { name: "Workout name" });
+    await user.clear(nameInput);
+    await user.type(nameInput, "Leg day");
+    await user.click(screen.getByRole("button", { name: "Save name" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    await user.click(screen.getByRole("button", { name: "Save changes" }));
+
+    const renamedCard = await screen.findByRole("article");
+    expect(within(renamedCard).getByRole("heading", { name: "Leg day" }))
+      .toBeInTheDocument();
+    await user.click(
+      within(renamedCard).getByRole("button", { name: "Save as template" }),
     );
     expect(screen.getByRole("heading", { name: "Save as template" }))
       .toBeInTheDocument();
@@ -168,7 +182,7 @@ describe("daily fitness events", () => {
 
     await user.click(screen.getByRole("button", { name: "+ Add event" }));
     await user.click(screen.getByRole("button", { name: /Resistance/ }));
-    await user.click(screen.getByRole("button", { name: /Lower body.*Start/ }));
+    await user.click(screen.getByRole("button", { name: /Leg day.*Start/ }));
     expect(
       await screen.findByRole("heading", {
         name: "Dumbbell Romanian Deadlift",

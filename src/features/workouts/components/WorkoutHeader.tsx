@@ -8,6 +8,7 @@ interface Props {
   name: string;
   onDiscard: () => void;
   onFinish: () => void;
+  onRename: () => void;
   ready: boolean;
 }
 
@@ -22,7 +23,16 @@ export function WorkoutHeader(props: Props) {
           <p className="eyebrow">
             {format(parseISO(props.date), "EEEE, d MMMM")}
           </p>
-          <h1>{props.name}</h1>
+          <div className="workout-title-row">
+            <h1>{props.name}</h1>
+            <button
+              className="text-action workout-name-action"
+              onClick={props.onRename}
+              type="button"
+            >
+              Edit name
+            </button>
+          </div>
           <p className="workout-count">
             {props.exerciseCount}{" "}
             {props.exerciseCount === 1 ? "exercise" : "exercises"}

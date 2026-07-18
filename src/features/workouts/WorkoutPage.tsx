@@ -1,10 +1,10 @@
 import { format } from "date-fns";
 import { useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { EmptyState } from "../../components/ui/EmptyState.tsx";
 import { ExercisePickerDialog } from "./components/ExercisePickerDialog.tsx";
-import { WorkoutExerciseList } from "./components/WorkoutExerciseList.tsx";
+import { WorkoutContent } from "./components/WorkoutContent.tsx";
 import { WorkoutHeader } from "./components/WorkoutHeader.tsx";
+import { WorkoutNameDialog } from "./components/WorkoutNameDialog.tsx";
 import { isWorkoutReady } from "./resistanceProgress.ts";
 import { useWorkoutDraft } from "./useWorkoutDraft.ts";
 
@@ -13,6 +13,7 @@ export function WorkoutPage() {
   const navigate = useNavigate();
   const workout = useWorkoutDraft(draftId);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [renaming, setRenaming] = useState(false);
   const [error, setError] = useState("");
   const [completing, setCompleting] = useState(false);
 
@@ -61,35 +62,17 @@ export function WorkoutPage() {
         name={draft.name}
         onDiscard={discard}
         onFinish={finish}
+        onRename={() => setRenaming(true)}
         ready={isWorkoutReady(draft) && !completing}
       />
       {error && <p className="form-error workout-error">{error}</p>}
-      {draft.exercises.length === 0
-        ? (
-          <EmptyState
-            action={
-              <button
-                className="primary-button"
-                onClick={() => setPickerOpen(true)}
-                type="button"
-              >
-                ＋ Add first exercise
-              </button>
-            }
-            description="Choose from your dumbbell and bodyweight exercise library."
-            icon="🏋️"
-            title="Build your workout"
-          />
-        )
-        : (
-          <WorkoutExerciseList
-            draft={draft}
-            events={workout.events}
-            onAdd={() => setPickerOpen(true)}
-            onChangeSets={workout.changeSets}
-            onRemove={workout.removeExercise}
-          />
-        )}
+      <WorkoutContent
+        draft={draft}
+        events={workout.events}
+        onAdd={() => setPickerOpen(true)}
+        onChangeSets={workout.changeSets}
+        onRemove={workout.removeExercise}
+      />
       {pickerOpen && (
         <ExercisePickerDialog
           exercises={workout.exercises}
@@ -98,6 +81,16 @@ export function WorkoutPage() {
           onSelect={(exercise) => {
             workout.addExercise(exercise);
             setPickerOpen(false);
+          }}
+        />
+      )}
+      {renaming && (
+        <WorkoutNameDialog
+          defaultName={draft.name}
+          onClose={() => setRenaming(false)}
+          onSave={async (name) => {
+            await workout.rename(name);
+            setRenaming(false);
           }}
         />
       )}

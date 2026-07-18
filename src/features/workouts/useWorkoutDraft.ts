@@ -30,7 +30,7 @@ export function useWorkoutDraft(id: string) {
   const commit = (next: ResistanceWorkoutDraft) => {
     const updated = { ...next, updatedAt: new Date().toISOString() };
     dispatch(draftUpdated(updated));
-    void dispatch(persistWorkout(updated));
+    return dispatch(persistWorkout(updated));
   };
   const addExercise = (exercise: Exercise) => {
     if (!draft) return;
@@ -38,7 +38,7 @@ export function useWorkoutDraft(id: string) {
     const sets = previous?.sets.length
       ? previous.sets.map((set) => newSet(set.weightKg, set.repetitions))
       : [newSet(null)];
-    commit({
+    void commit({
       ...draft,
       exercises: [...draft.exercises, {
         id: crypto.randomUUID(),
@@ -51,7 +51,7 @@ export function useWorkoutDraft(id: string) {
   };
   const removeExercise = (entryId: string) => {
     if (draft) {
-      commit({
+      void commit({
         ...draft,
         exercises: draft.exercises.filter((entry) => entry.id !== entryId),
       });
@@ -59,7 +59,7 @@ export function useWorkoutDraft(id: string) {
   };
   const changeSets = (entryId: string, sets: ResistanceSet[]) => {
     if (draft) {
-      commit({
+      void commit({
         ...draft,
         exercises: draft.exercises.map((entry) =>
           entry.id === entryId ? { ...entry, sets } : entry
@@ -69,6 +69,15 @@ export function useWorkoutDraft(id: string) {
   };
   const finish = () => dispatch(finishWorkout(id)).unwrap();
   const discard = () => dispatch(discardWorkout(id)).unwrap();
+  const rename = async (name: string) => {
+    if (!draft) throw new Error("Workout draft not found");
+    try {
+      await commit({ ...draft, name }).unwrap();
+    } catch (error) {
+      dispatch(draftUpdated(draft));
+      throw error;
+    }
+  };
 
   return {
     addExercise,
@@ -78,6 +87,7 @@ export function useWorkoutDraft(id: string) {
     events,
     exercises,
     finish,
+    rename,
     removeExercise,
     status,
   };

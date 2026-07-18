@@ -1049,6 +1049,15 @@ h1 {
   justify-content: space-between;
   gap: 18px;
 }
+.workout-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+.workout-name-action {
+  padding: 0 6px;
+}
 .workout-count {
   margin: 7px 0 0;
   color: var(--muted);
