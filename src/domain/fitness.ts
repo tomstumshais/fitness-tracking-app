@@ -40,14 +40,38 @@ interface BaseFitnessEvent {
 
 export interface DistanceEvent extends BaseFitnessEvent {
   type: "running" | "walking";
+  durationMinutes: number;
   distanceKm: number;
 }
 
 export interface CardioEvent extends BaseFitnessEvent {
   type: "cardio";
   name: string;
-  intensity?: "low" | "moderate" | "high";
+  durationMinutes: number;
+  intensity: CardioIntensity;
 }
+
+export type CardioIntensity = "low" | "moderate" | "high";
+
+export interface DistanceEventInput {
+  type: "running" | "walking";
+  date: string;
+  durationMinutes: number;
+  distanceKm: number;
+  notes?: string;
+}
+
+export interface CardioEventInput {
+  type: "cardio";
+  date: string;
+  name: string;
+  durationMinutes: number;
+  intensity: CardioIntensity;
+  notes?: string;
+}
+
+export type EditableFitnessEvent = CardioEvent | DistanceEvent;
+export type EditableFitnessEventInput = CardioEventInput | DistanceEventInput;
 
 export interface ResistanceSet {
   id: string;

@@ -4,8 +4,6 @@ import {
   endOfMonth,
   endOfWeek,
   format,
-  isSameDay,
-  isSameMonth,
   isValid,
   parseISO,
   startOfMonth,
@@ -13,12 +11,16 @@ import {
   subMonths,
 } from "date-fns";
 import { Link, Navigate, useParams } from "react-router-dom";
+import { useAppSelector } from "../../app/hooks.ts";
+import { selectAllEvents } from "../events/eventsSlice.ts";
+import { CalendarDayLink } from "./CalendarDayLink.tsx";
 
 const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export function CalendarPage() {
   const { month = "" } = useParams();
   const monthDate = parseISO(`${month}-01`);
+  const events = useAppSelector(selectAllEvents);
 
   if (!/^\d{4}-\d{2}$/.test(month) || !isValid(monthDate)) {
     return (
@@ -30,7 +32,6 @@ export function CalendarPage() {
     start: startOfWeek(startOfMonth(monthDate), { weekStartsOn: 1 }),
     end: endOfWeek(endOfMonth(monthDate), { weekStartsOn: 1 }),
   });
-
   return (
     <section className="page calendar-page">
       <div className="calendar-heading">
@@ -59,16 +60,14 @@ export function CalendarPage() {
         </div>
         <div className="calendar-grid">
           {calendarDays.map((day) => (
-            <Link
-              aria-label={format(day, "EEEE, d MMMM yyyy")}
-              className={`calendar-day${
-                isSameMonth(day, monthDate) ? "" : " muted"
-              }${isSameDay(day, new Date()) ? " today" : ""}`}
+            <CalendarDayLink
+              day={day}
+              eventTypes={events.filter((event) =>
+                event.date === format(day, "yyyy-MM-dd")
+              ).map((event) => event.type)}
               key={day.toISOString()}
-              to={`/day/${format(day, "yyyy-MM-dd")}`}
-            >
-              <span>{format(day, "d")}</span>
-            </Link>
+              month={monthDate}
+            />
           ))}
         </div>
       </div>

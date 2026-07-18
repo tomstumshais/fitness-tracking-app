@@ -1,10 +1,16 @@
 import { format, isValid, parseISO } from "date-fns";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { EmptyState } from "../../components/ui/EmptyState.tsx";
+import { EventFormDialog } from "../events/components/EventFormDialog.tsx";
+import { EventList } from "../events/components/EventList.tsx";
+import { EventTypePicker } from "../events/components/EventTypePicker.tsx";
+import { DayHeader } from "./DayHeader.tsx";
+import { useDayEvents } from "./useDayEvents.ts";
 
 export function DayPage() {
   const { date = "" } = useParams();
   const selectedDate = parseISO(date);
+  const day = useDayEvents(date);
 
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !isValid(selectedDate)) {
     return (
@@ -14,29 +20,48 @@ export function DayPage() {
 
   return (
     <section className="page day-page">
-      <Link
-        className="back-link"
-        to={`/calendar/${format(selectedDate, "yyyy-MM")}`}
-      >
-        ← Calendar
-      </Link>
-      <div className="day-heading">
-        <div>
-          <p className="eyebrow">{format(selectedDate, "EEEE")}</p>
-          <h1>{format(selectedDate, "d MMMM yyyy")}</h1>
-        </div>
-        <button className="primary-button" type="button">+ Add event</button>
-      </div>
-      <EmptyState
-        action={
-          <button className="secondary-button" type="button">
-            Log your first event
-          </button>
-        }
-        description="Running, walking, cardio and resistance workouts will appear here."
-        icon="＋"
-        title="No activity logged"
-      />
+      <DayHeader date={selectedDate} onAdd={() => day.setPickerOpen(true)} />
+      {day.status === "loading" && day.events.length === 0 && (
+        <p className="loading-state">Loading events…</p>
+      )}
+      {day.status !== "loading" && day.events.length === 0 && (
+        <EmptyState
+          action={
+            <button
+              className="secondary-button"
+              onClick={() => day.setPickerOpen(true)}
+              type="button"
+            >
+              Log your first event
+            </button>
+          }
+          description="Running, walking, cardio and resistance workouts will appear here."
+          icon="＋"
+          title="No activity logged"
+        />
+      )}
+      {day.events.length > 0 && (
+        <EventList
+          events={day.events}
+          onDelete={day.remove}
+          onEdit={day.editEvent}
+        />
+      )}
+      {day.pickerOpen && (
+        <EventTypePicker
+          onClose={() => day.setPickerOpen(false)}
+          onSelect={day.openForm}
+        />
+      )}
+      {day.formType && (
+        <EventFormDialog
+          date={date}
+          event={day.editing}
+          onClose={day.closeForm}
+          onSave={day.save}
+          type={day.formType}
+        />
+      )}
     </section>
   );
 }

@@ -188,9 +188,12 @@ h1 {
   padding: 6px 8px 12px;
 }
 .calendar-day {
-  display: grid;
+  display: flex;
   min-height: 48px;
-  place-items: center;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
   border-radius: 12px;
   font-size: 0.9rem;
   font-weight: 650;
@@ -204,6 +207,34 @@ h1 {
 .calendar-day.today {
   color: white;
   background: var(--primary);
+}
+.event-markers {
+  display: flex;
+  min-height: 5px;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+.event-marker {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #8c86a0;
+}
+.event-marker.running {
+  background: #1f936b;
+}
+.event-marker.walking {
+  background: #3478c9;
+}
+.event-marker.cardio {
+  background: #d66d2f;
+}
+.event-marker.resistance {
+  background: var(--primary);
+}
+.calendar-day.today .event-marker {
+  background: white;
 }
 .calendar-hint {
   margin: 16px 2px 0;
@@ -561,7 +592,7 @@ h1 {
   font-size: 0.8rem;
   font-weight: 700;
 }
-.form-field input, .form-field select {
+.form-field input, .form-field select, .form-field textarea {
   width: 100%;
   min-height: 48px;
   padding: 0 13px;
@@ -571,9 +602,18 @@ h1 {
   color: #1c1b22;
   background: white;
 }
-.form-field input:focus, .form-field select:focus {
+.form-field textarea {
+  min-height: 84px;
+  padding-top: 12px;
+  resize: vertical;
+  font: inherit;
+}
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(101, 88, 211, 0.14);
+}
+.notes-field {
+  margin-top: 16px;
 }
 .form-field-row {
   display: grid;
@@ -601,7 +641,191 @@ h1 {
   opacity: 0.58;
 }
 
+.event-picker {
+  width: min(100%, 560px);
+}
+.event-type-grid {
+  display: grid;
+  gap: 10px;
+}
+.event-type-option {
+  display: grid;
+  min-height: 76px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  color: #1c1b22;
+  text-align: left;
+  background: white;
+}
+.event-type-option:not(:disabled):hover {
+  border-color: #c9c3ee;
+  background: #faf9ff;
+}
+.event-type-option:disabled {
+  cursor: not-allowed;
+  opacity: 0.64;
+}
+.event-type-icon {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border-radius: 14px;
+  background: #f1eff5;
+  font-size: 1.3rem;
+}
+.event-type-option.running .event-type-icon {
+  background: #e4f7ef;
+}
+.event-type-option.walking .event-type-icon {
+  background: #e8f2ff;
+}
+.event-type-option.cardio .event-type-icon {
+  background: #fff0e5;
+}
+.event-type-option.resistance .event-type-icon {
+  background: #eeebff;
+}
+.event-type-option strong, .event-type-option small {
+  display: block;
+}
+.event-type-option strong {
+  margin-bottom: 4px;
+  font-size: 0.95rem;
+}
+.event-type-option small {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.option-arrow {
+  color: #aaa5b3;
+  font-size: 1.7rem;
+}
+.coming-badge {
+  padding: 5px 8px;
+  border-radius: 999px;
+  color: var(--primary);
+  background: #f0eefe;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.event-list {
+  display: grid;
+  gap: 12px;
+}
+.event-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  padding: 17px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(41, 35, 66, 0.04);
+}
+.event-card-icon {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border-radius: 14px;
+  background: #f1eff5;
+  font-size: 1.25rem;
+}
+.event-card-icon.running {
+  background: #e4f7ef;
+}
+.event-card-icon.walking {
+  background: #e8f2ff;
+}
+.event-card-icon.cardio {
+  background: #fff0e5;
+}
+.event-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.event-card-heading h2 {
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+.event-kind {
+  padding: 4px 7px;
+  border-radius: 999px;
+  color: var(--muted);
+  background: #f2f0f5;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+.event-kind.running {
+  color: #176b50;
+  background: #e4f7ef;
+}
+.event-kind.walking {
+  color: #245f9e;
+  background: #e8f2ff;
+}
+.event-kind.cardio {
+  color: #a64c19;
+  background: #fff0e5;
+}
+.event-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 14px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.event-metrics strong {
+  color: #34313a;
+  text-transform: capitalize;
+}
+.event-notes {
+  margin: 11px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+.event-actions {
+  display: flex;
+  gap: 4px;
+  margin: 10px 0 -8px -8px;
+}
+.event-actions button {
+  min-height: 38px;
+  padding: 0 8px;
+  border: 0;
+  color: var(--primary);
+  background: transparent;
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+.event-actions .danger-text {
+  color: #b42318;
+}
+.loading-state {
+  padding: 50px 20px;
+  color: var(--muted);
+  text-align: center;
+}
+
 @media (max-width: 520px) {
+  .day-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .day-heading .primary-button {
+    width: 100%;
+  }
   .exercise-page-heading {
     align-items: flex-start;
     flex-direction: column;

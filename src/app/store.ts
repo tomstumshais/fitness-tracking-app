@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
+import eventsReducer from "../features/events/eventsSlice.ts";
 import exercisesReducer from "../features/exercises/exercisesSlice.ts";
 
 export const createAppStore = () =>
   configureStore({
-    reducer: { exercises: exercisesReducer },
+    reducer: { events: eventsReducer, exercises: exercisesReducer },
   });
 
 export const store = createAppStore();
