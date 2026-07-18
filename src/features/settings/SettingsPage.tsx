@@ -1,9 +1,12 @@
 import { BackupPanel } from "./components/BackupPanel.tsx";
+import { PwaPanel } from "./components/PwaPanel.tsx";
 import { RestoreBackupDialog } from "./components/RestoreBackupDialog.tsx";
 import { useBackupActions } from "./useBackupActions.ts";
+import { usePwaInstall } from "./usePwaInstall.ts";
 
 export function SettingsPage() {
   const backup = useBackupActions();
+  const pwa = usePwaInstall();
 
   return (
     <section className="page">
@@ -17,6 +20,13 @@ export function SettingsPage() {
           </div>
           <span className="status-badge active">Active</span>
         </article>
+        <PwaPanel
+          canInstall={pwa.canInstall}
+          installed={pwa.installed}
+          isIos={pwa.isIos}
+          offlineReady={pwa.offlineReady}
+          onInstall={() => void pwa.install()}
+        />
         <BackupPanel
           busy={backup.workState !== "idle"}
           feedback={backup.feedback}

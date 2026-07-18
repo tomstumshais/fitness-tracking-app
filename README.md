@@ -65,11 +65,14 @@ deno task build
 - Progressive-overload comparisons by volume or bodyweight repetitions
 - Completed workout cards and calendar activity markers
 - Versioned JSON backup and validated, atomic restore of local user data
+- Installable home-screen PWA with an offline-cached application shell
 - Mobile navigation and responsive desktop layout
 
-## Remaining first version
+## First version status
 
-1. Installable offline PWA
+The planned first-version milestones are complete. Fitness data remains local to
+the browser or installed app, so JSON backups are recommended before changing
+devices or clearing browser storage.
 
 The application is expected to be published at
 `https://tomstumshais.github.io/fitness-tracking-app/`.

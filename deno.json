@@ -5,7 +5,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b",
-    "lint": "deno lint src vite.config.ts vitest.config.ts",
+    "lint": "deno lint src public/sw.js vite.config.ts vitest.config.ts",
     "format": "deno fmt",
     "format:check": "deno fmt --check",
     "test": "vitest run",

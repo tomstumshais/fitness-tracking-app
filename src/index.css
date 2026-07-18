@@ -335,6 +335,47 @@ h1 {
   border-radius: 16px;
   background: var(--surface);
 }
+.pwa-panel {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.pwa-panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+.pwa-panel h2 {
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+.pwa-panel-heading p, .pwa-note, .install-message {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.pwa-install, .install-message, .install-instructions {
+  margin-top: 18px;
+}
+.install-instructions {
+  padding: 14px;
+  border-radius: 12px;
+  color: #4e477f;
+  background: #f0eefe;
+  font-size: 0.85rem;
+}
+.install-instructions ol {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding-left: 20px;
+}
+.pwa-note {
+  margin-top: 14px;
+}
 .backup-panel-heading {
   display: flex;
   align-items: flex-start;
@@ -385,12 +426,14 @@ h1 {
   background: #fff0ee;
 }
 .status-badge {
+  flex-shrink: 0;
   padding: 6px 9px;
   border-radius: 999px;
   color: var(--primary);
   background: #f0eefe;
   font-size: 0.7rem;
   font-weight: 750;
+  white-space: nowrap;
 }
 .status-badge.active {
   color: #176b50;

@@ -39,6 +39,8 @@ describe("backup settings", () => {
         </AppBootstrap>
       </Provider>,
     );
+    expect(screen.getByRole("heading", { name: "Install and use offline" }))
+      .toBeInTheDocument();
     const file = new File([JSON.stringify(backup)], "fitness-backup.json", {
       type: "application/json",
     });
