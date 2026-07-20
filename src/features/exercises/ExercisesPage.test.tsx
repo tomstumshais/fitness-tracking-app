@@ -25,7 +25,8 @@ describe("exercise library", () => {
       name: "Search exercises",
     });
     await user.type(search, "romanian");
-    expect(screen.getByText("Dumbbell Romanian Deadlift")).toBeInTheDocument();
+    expect(await screen.findByText("Dumbbell Romanian Deadlift"))
+      .toBeInTheDocument();
     expect(screen.queryByText("Push-Up")).not.toBeInTheDocument();
 
     await user.clear(search);
