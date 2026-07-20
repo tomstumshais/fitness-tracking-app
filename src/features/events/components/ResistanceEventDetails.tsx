@@ -1,4 +1,5 @@
 import type { FitnessEvent, ResistanceEvent } from "../../../domain/fitness.ts";
+import { equipmentSetLabel } from "../../../domain/equipment.ts";
 import {
   findPreviousExercise,
   getProgressSummary,
@@ -13,7 +14,7 @@ function formatSets(event: ResistanceEvent, exerciseIndex: number) {
   const exercise = event.exercises[exerciseIndex];
   return exercise.sets.map((set) =>
     `${
-      exercise.equipment === "bodyweight" ? "BW" : `${set.weightKg} kg`
+      equipmentSetLabel(exercise.equipment) ?? `${set.weightKg} kg`
     } × ${set.repetitions}`
   ).join(" · ");
 }

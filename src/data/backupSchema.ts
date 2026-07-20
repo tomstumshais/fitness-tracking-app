@@ -8,7 +8,7 @@ import type {
 import type { SettingRecord } from "./database.ts";
 
 export const BACKUP_FORMAT = "fitness-log-backup";
-export const BACKUP_VERSION = 2;
+export const BACKUP_VERSION = 3;
 
 export interface FitnessBackupV1 {
   format: typeof BACKUP_FORMAT;
@@ -24,11 +24,18 @@ export interface FitnessBackupV1 {
 
 export interface FitnessBackupV2 {
   format: typeof BACKUP_FORMAT;
-  version: typeof BACKUP_VERSION;
+  version: 2;
   exportedAt: string;
   data: FitnessBackupV1["data"] & {
     workoutTemplates: WorkoutTemplate[];
   };
+}
+
+export interface FitnessBackupV3 {
+  format: typeof BACKUP_FORMAT;
+  version: typeof BACKUP_VERSION;
+  exportedAt: string;
+  data: FitnessBackupV2["data"];
 }
 
 const identifier = z.string().trim().min(1);
@@ -36,7 +43,7 @@ const timestamp = z.string().datetime();
 const calendarDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const name = z.string().trim().min(1).max(120);
 const notes = z.string().max(2_000).optional();
-const equipment = z.enum(["dumbbell", "bodyweight"]);
+const equipment = z.enum(["dumbbell", "resistance-band", "bodyweight"]);
 const muscleGroup = z.enum([
   "chest",
   "back",
@@ -192,14 +199,23 @@ const fitnessBackupV1Schema: z.ZodType<FitnessBackupV1> = z.object({
   data: z.object(backupDataV1).strict(),
 }).strict();
 
-export const fitnessBackupSchema: z.ZodType<FitnessBackupV2> = z.object({
+const backupDataV2 = {
+  ...backupDataV1,
+  workoutTemplates: z.array(workoutTemplate).max(5_000),
+};
+
+const fitnessBackupV2Schema: z.ZodType<FitnessBackupV2> = z.object({
+  format: z.literal(BACKUP_FORMAT),
+  version: z.literal(2),
+  exportedAt: timestamp,
+  data: z.object(backupDataV2).strict(),
+}).strict();
+
+export const fitnessBackupSchema: z.ZodType<FitnessBackupV3> = z.object({
   format: z.literal(BACKUP_FORMAT),
   version: z.literal(BACKUP_VERSION),
   exportedAt: timestamp,
-  data: z.object({
-    ...backupDataV1,
-    workoutTemplates: z.array(workoutTemplate).max(5_000),
-  }).strict(),
+  data: z.object(backupDataV2).strict(),
 }).strict().superRefine((backup, context) => {
   requireUniqueIds(backup.data.customExercises, context, [
     "data",
@@ -281,6 +297,13 @@ export function parseFitnessBackup(value: unknown) {
       version: BACKUP_VERSION,
       data: { ...backup.data, workoutTemplates: [] },
     });
+  }
+  if (
+    typeof value === "object" && value !== null && "version" in value &&
+    value.version === 2
+  ) {
+    const backup = fitnessBackupV2Schema.parse(value);
+    return fitnessBackupSchema.parse({ ...backup, version: BACKUP_VERSION });
   }
   return fitnessBackupSchema.parse(value);
 }

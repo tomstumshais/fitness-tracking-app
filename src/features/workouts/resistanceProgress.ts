@@ -1,9 +1,11 @@
 import type {
+  Equipment,
   FitnessEvent,
   ResistanceExerciseEntry,
   ResistanceSet,
   ResistanceWorkoutDraft,
 } from "../../domain/fitness.ts";
+import { equipmentSetLabel, requiresWeight } from "../../domain/equipment.ts";
 
 export function findPreviousExercise(
   events: FitnessEvent[],
@@ -27,15 +29,17 @@ export function findPreviousExercise(
 
 export function formatPreviousSet(
   set: ResistanceSet | undefined,
-  bodyweight: boolean,
+  equipment: Equipment,
 ) {
   if (!set) return "—";
-  return `${bodyweight ? "BW" : set.weightKg ?? 0} × ${set.repetitions}`;
+  return `${
+    equipmentSetLabel(equipment) ?? set.weightKg ?? 0
+  } × ${set.repetitions}`;
 }
 
 function trainingLoad(exercise: ResistanceExerciseEntry) {
   const sets = exercise.sets.filter((set) => set.completed);
-  return exercise.equipment === "bodyweight"
+  return !requiresWeight(exercise.equipment)
     ? sets.reduce((total, set) => total + set.repetitions, 0)
     : sets.reduce(
       (total, set) => total + (set.weightKg ?? 0) * set.repetitions,
@@ -57,7 +61,7 @@ export function getProgressSummary(
   const difference = Math.round(
     (currentLoad - previousLoad) / previousLoad * 100,
   );
-  const unit = current.equipment === "bodyweight" ? "reps" : "volume";
+  const unit = requiresWeight(current.equipment) ? "volume" : "reps";
   if (difference > 0) {
     return { label: `+${difference}% ${unit}`, tone: "positive" };
   }
@@ -74,7 +78,7 @@ export function isWorkoutReady(draft: ResistanceWorkoutDraft) {
       exercise.sets.length > 0 &&
       exercise.sets.every((set) =>
         set.completed && set.repetitions > 0 &&
-        (exercise.equipment === "bodyweight" || (set.weightKg ?? 0) > 0)
+        (!requiresWeight(exercise.equipment) || (set.weightKg ?? 0) > 0)
       )
     );
 }

@@ -17,9 +17,9 @@ describe("fitness backup repository", () => {
 
   it("exports and atomically restores all user-created data", async () => {
     const custom = await createCustomExercise({
-      name: "Floor Fly",
-      equipment: "dumbbell",
-      muscleGroup: "chest",
+      name: "Band Pull-Apart",
+      equipment: "resistance-band",
+      muscleGroup: "shoulders",
     });
     const event = await createFitnessEvent({
       type: "running",
@@ -105,9 +105,17 @@ describe("fitness backup repository", () => {
       data: legacyData,
     });
 
-    expect(migrated.version).toBe(2);
+    expect(migrated.version).toBe(3);
     expect(migrated.data.workoutTemplates).toEqual([]);
     expect(migrated.data.workoutDrafts).toHaveLength(1);
+  });
+
+  it("migrates version 2 backups to the current format", async () => {
+    const current = await createFitnessBackup();
+    const migrated = readFitnessBackup({ ...current, version: 2 });
+
+    expect(migrated.version).toBe(3);
+    expect(migrated.data.workoutTemplates).toEqual([]);
   });
 
   it("renames legacy cycling activities when restoring a backup", async () => {

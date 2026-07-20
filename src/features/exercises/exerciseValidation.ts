@@ -5,7 +5,7 @@ export const customExerciseSchema = z.object({
     60,
     "Use 60 characters or fewer",
   ),
-  equipment: z.enum(["dumbbell", "bodyweight"]),
+  equipment: z.enum(["dumbbell", "resistance-band", "bodyweight"]),
   muscleGroup: z.enum([
     "chest",
     "back",

@@ -65,20 +65,23 @@ export function ExercisePickerDialog(props: Props) {
           />
         </label>
         <div className="filter-chips workout-filters">
-          {(["all", "dumbbell", "bodyweight"] as const).map((item) => (
-            <button
-              className={`filter-chip${equipment === item ? " active" : ""}`}
-              key={item}
-              onClick={() => setEquipment(item)}
-              type="button"
-            >
-              {item === "all"
-                ? "All"
-                : item === "dumbbell"
-                ? "Dumbbells"
-                : "Bodyweight"}
-            </button>
-          ))}
+          {(["all", "dumbbell", "resistance-band", "bodyweight"] as const)
+            .map((item) => (
+              <button
+                className={`filter-chip${equipment === item ? " active" : ""}`}
+                key={item}
+                onClick={() => setEquipment(item)}
+                type="button"
+              >
+                {item === "all"
+                  ? "All"
+                  : item === "dumbbell"
+                  ? "Dumbbells"
+                  : item === "resistance-band"
+                  ? "Bands"
+                  : "Bodyweight"}
+              </button>
+            ))}
         </div>
         <ExercisePickerResults exercises={results} onSelect={props.onSelect} />
       </section>

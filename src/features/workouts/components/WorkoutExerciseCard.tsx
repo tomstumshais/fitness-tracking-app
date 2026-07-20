@@ -2,6 +2,10 @@ import type {
   ResistanceExerciseEntry,
   ResistanceSet,
 } from "../../../domain/fitness.ts";
+import {
+  equipmentAbbreviation,
+  requiresWeight,
+} from "../../../domain/equipment.ts";
 import { getProgressSummary } from "../resistanceProgress.ts";
 import { ResistanceSetRow } from "./ResistanceSetRow.tsx";
 
@@ -35,7 +39,7 @@ export function WorkoutExerciseCard(
     <article className="workout-exercise-card">
       <div className="workout-exercise-heading">
         <span className={`equipment-icon ${entry.equipment}`}>
-          {entry.equipment === "dumbbell" ? "DB" : "BW"}
+          {equipmentAbbreviation(entry.equipment)}
         </span>
         <div>
           <h2>{entry.exerciseName}</h2>
@@ -60,7 +64,7 @@ export function WorkoutExerciseCard(
         <div className="set-header" role="row">
           <span>Set</span>
           <span>Previous</span>
-          <span>kg</span>
+          <span>{requiresWeight(entry.equipment) ? "kg" : "Load"}</span>
           <span>Reps</span>
           <span>Done</span>
         </div>
@@ -78,7 +82,7 @@ export function WorkoutExerciseCard(
           />
         ))}
       </div>
-      {entry.equipment === "dumbbell" && (
+      {requiresWeight(entry.equipment) && (
         <p className="weight-note">kg is the weight of each dumbbell</p>
       )}
       <button className="add-set-button" onClick={addSet} type="button">

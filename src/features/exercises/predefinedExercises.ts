@@ -45,6 +45,12 @@ export const predefinedExercises: Exercise[] = [
     "dumbbell",
     "glutes",
   ),
+  exercise(
+    "monster-walk-band",
+    "Monster Walk with Band",
+    "resistance-band",
+    "glutes",
+  ),
   exercise("dumbbell-floor-press", "Dumbbell Floor Press", "dumbbell", "chest"),
   exercise("dumbbell-bench-press", "Dumbbell Bench Press", "dumbbell", "chest"),
   exercise(

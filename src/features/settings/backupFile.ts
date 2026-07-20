@@ -1,8 +1,8 @@
-import type { FitnessBackupV2 } from "../../data/backupSchema.ts";
+import type { FitnessBackupV3 } from "../../data/backupSchema.ts";
 
 export const MAX_BACKUP_FILE_BYTES = 5 * 1024 * 1024;
 
-export function downloadFitnessBackup(backup: FitnessBackupV2) {
+export function downloadFitnessBackup(backup: FitnessBackupV3) {
   const blob = new Blob([JSON.stringify(backup, null, 2)], {
     type: "application/json",
   });

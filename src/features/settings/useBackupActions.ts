@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { FitnessBackupV2 } from "../../data/backupSchema.ts";
+import type { FitnessBackupV3 } from "../../data/backupSchema.ts";
 import {
   createFitnessBackup,
   readFitnessBackup,
@@ -21,7 +21,7 @@ function errorMessage(error: unknown) {
 
 export function useBackupActions() {
   const dispatch = useAppDispatch();
-  const [candidate, setCandidate] = useState<FitnessBackupV2 | null>(null);
+  const [candidate, setCandidate] = useState<FitnessBackupV3 | null>(null);
   const [workState, setWorkState] = useState<WorkState>("idle");
   const [feedback, setFeedback] = useState<Feedback>(null);
 

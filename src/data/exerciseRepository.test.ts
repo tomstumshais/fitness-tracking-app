@@ -12,7 +12,7 @@ describe("exercise repository", () => {
   beforeEach(resetDatabaseForTests);
   afterEach(resetDatabaseForTests);
 
-  it("seeds only predefined dumbbell and bodyweight exercises", async () => {
+  it("seeds the supported home-training exercises", async () => {
     const exercises = await listExercises();
 
     expect(exercises.length).toBeGreaterThan(40);
@@ -26,10 +26,14 @@ describe("exercise repository", () => {
         equipment: "dumbbell",
       }),
       expect.objectContaining({ name: "Push-Up", equipment: "bodyweight" }),
+      expect.objectContaining({
+        name: "Monster Walk with Band",
+        equipment: "resistance-band",
+      }),
     ]));
     expect(
       exercises.every((item) =>
-        ["dumbbell", "bodyweight"].includes(item.equipment)
+        ["dumbbell", "resistance-band", "bodyweight"].includes(item.equipment)
       ),
     ).toBe(true);
   });

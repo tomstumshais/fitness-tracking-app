@@ -1,4 +1,4 @@
-export type Equipment = "dumbbell" | "bodyweight";
+export type Equipment = "dumbbell" | "resistance-band" | "bodyweight";
 export type ExerciseSource = "predefined" | "custom";
 export type MuscleGroup =
   | "chest"

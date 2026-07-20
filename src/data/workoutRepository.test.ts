@@ -56,6 +56,31 @@ describe("resistance workout repository", () => {
     expect(await listWorkoutDrafts()).toHaveLength(1);
   });
 
+  it("completes a resistance-band exercise without a kilogram value", async () => {
+    const created = await createWorkoutDraft("2026-07-18", "Band workout");
+    await saveWorkoutDraft({
+      ...created,
+      exercises: [{
+        id: "entry-band",
+        exerciseId: "predefined:monster-walk-band",
+        exerciseName: "Monster Walk with Band",
+        equipment: "resistance-band",
+        sets: [{
+          id: "set-band",
+          weightKg: null,
+          repetitions: 12,
+          completed: true,
+        }],
+      }],
+    });
+
+    const result = await completeWorkoutDraft(created.id);
+    expect(result.event.exercises[0]).toEqual(expect.objectContaining({
+      exerciseName: "Monster Walk with Band",
+      equipment: "resistance-band",
+    }));
+  });
+
   it("edits a completed event in place and duplicates it as a new draft", async () => {
     const created = await createWorkoutDraft("2026-07-17", "Upper body");
     await saveWorkoutDraft({

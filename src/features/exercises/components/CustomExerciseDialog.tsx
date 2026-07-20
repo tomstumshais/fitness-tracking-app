@@ -62,6 +62,7 @@ export function CustomExerciseDialog(props: CustomExerciseDialogProps) {
             <label className="form-field">
               Equipment<select {...register("equipment")}>
                 <option value="dumbbell">Dumbbells</option>
+                <option value="resistance-band">Resistance band</option>
                 <option value="bodyweight">Bodyweight</option>
               </select>
             </label>

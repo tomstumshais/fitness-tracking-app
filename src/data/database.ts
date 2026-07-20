@@ -10,7 +10,7 @@ import { normalizeEventActivityName } from "./activityNameMigration.ts";
 import { predefinedExercises } from "../features/exercises/predefinedExercises.ts";
 
 const DATABASE_NAME = "fitness-log";
-const DATABASE_VERSION = 3;
+const DATABASE_VERSION = 4;
 const ACTIVITY_NAME_MIGRATION_KEY = "migration:3:activity-names";
 
 export interface SettingRecord {

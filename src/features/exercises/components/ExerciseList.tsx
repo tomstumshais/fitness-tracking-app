@@ -1,4 +1,8 @@
 import type { Exercise } from "../../../domain/fitness.ts";
+import {
+  equipmentAbbreviation,
+  equipmentLabel,
+} from "../../../domain/equipment.ts";
 import { muscleGroupLabel } from "../exerciseOptions.ts";
 
 interface ExerciseListProps {
@@ -28,7 +32,7 @@ export function ExerciseList(
             className={`equipment-icon ${exercise.equipment}`}
             aria-hidden="true"
           >
-            {exercise.equipment === "dumbbell" ? "DB" : "BW"}
+            {equipmentAbbreviation(exercise.equipment)}
           </span>
           <div className="exercise-card-content">
             <div className="exercise-title-row">
@@ -39,7 +43,7 @@ export function ExerciseList(
             </div>
             <p>
               {muscleGroupLabel(exercise.muscleGroup)} ·{" "}
-              {exercise.equipment === "dumbbell" ? "Dumbbells" : "Bodyweight"}
+              {equipmentLabel(exercise.equipment)}
             </p>
           </div>
           {exercise.source === "custom" && (

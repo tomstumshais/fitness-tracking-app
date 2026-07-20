@@ -2,8 +2,8 @@
 
 A mobile-first, local-first fitness tracker for logging running, walking,
 cardio, and resistance workouts. Resistance sessions focus on dumbbell and
-bodyweight exercises, with previous-set context and progressive overload
-comparisons.
+bodyweight and resistance-band exercises, with previous-set context and
+progressive overload comparisons.
 
 ## Product principles
 
@@ -61,7 +61,7 @@ deno task build
 - Monday-first calendar with refresh-safe day routes
 - Migratable IndexedDB schema for exercises, completed events, resistance
   drafts, workout templates, and settings
-- Curated dumbbell and bodyweight exercise library
+- Curated dumbbell, resistance-band and bodyweight exercise library
 - Search and equipment filters
 - Persistent custom exercise creation, editing, and deletion
 - Running, walking, outdoor cycling, indoor cycling, swimming, and physiotherapy
@@ -71,7 +71,7 @@ deno task build
 - Editing completed resistance workouts without changing their stable identity
 - Duplicating a completed workout into a new editable, incomplete draft
 - Set-by-set kg/repetition logging with previous-session values
-- Progressive-overload comparisons by volume or bodyweight repetitions
+- Progressive-overload comparisons by dumbbell volume or unweighted repetitions
 - Completed workout cards and calendar activity markers
 - Versioned JSON backup with backward migration and validated, atomic restore of
   local user data, including templates

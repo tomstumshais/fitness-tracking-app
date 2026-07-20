@@ -632,6 +632,11 @@ h1 {
   color: #1b775b;
   background: #e4f7ef;
 }
+
+.equipment-icon.resistance-band {
+  background: #fff1dc;
+  color: #9a5200;
+}
 .exercise-title-row {
   display: flex;
   align-items: center;

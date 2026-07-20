@@ -33,7 +33,7 @@ export function WorkoutContent(props: Props) {
           ＋ Add first exercise
         </button>
       }
-      description="Choose from your dumbbell and bodyweight exercise library."
+      description="Choose from your dumbbell, band and bodyweight exercise library."
       icon="🏋️"
       title="Build your workout"
     />

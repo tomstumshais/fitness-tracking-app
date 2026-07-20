@@ -1,8 +1,14 @@
-export type ExerciseFilter = "all" | "dumbbell" | "bodyweight" | "custom";
+export type ExerciseFilter =
+  | "all"
+  | "dumbbell"
+  | "resistance-band"
+  | "bodyweight"
+  | "custom";
 
 const filters: { value: ExerciseFilter; label: string }[] = [
   { value: "all", label: "All" },
   { value: "dumbbell", label: "Dumbbells" },
+  { value: "resistance-band", label: "Bands" },
   { value: "bodyweight", label: "Bodyweight" },
   { value: "custom", label: "Custom" },
 ];

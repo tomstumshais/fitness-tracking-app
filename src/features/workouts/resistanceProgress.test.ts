@@ -39,7 +39,7 @@ describe("resistance progress", () => {
       updatedAt: "2026-07-18T10:00:00.000Z",
     };
     const found = findPreviousExercise([previousEvent], draft, "squat");
-    expect(formatPreviousSet(found?.sets[0], false)).toBe("20 × 10");
+    expect(formatPreviousSet(found?.sets[0], "dumbbell")).toBe("20 × 10");
 
     const current = {
       ...previousEntry,
@@ -56,7 +56,34 @@ describe("resistance progress", () => {
     });
   });
 
-  it("requires weight for dumbbells but not bodyweight exercises", () => {
+  it("compares resistance-band progress by completed repetitions", () => {
+    const previous = {
+      ...previousEntry,
+      equipment: "resistance-band" as const,
+      sets: [{
+        id: "old-band-set",
+        weightKg: null,
+        repetitions: 10,
+        completed: true,
+      }],
+    };
+    const current = {
+      ...previous,
+      sets: [{
+        id: "new-band-set",
+        weightKg: null,
+        repetitions: 12,
+        completed: true,
+      }],
+    };
+
+    expect(getProgressSummary(current, previous)).toEqual({
+      label: "+20% reps",
+      tone: "positive",
+    });
+  });
+
+  it("requires weight only for dumbbell exercises", () => {
     const baseDraft: ResistanceWorkoutDraft = {
       id: "draft",
       date: "2026-07-18",
@@ -74,5 +101,14 @@ describe("resistance progress", () => {
       ...baseDraft,
       exercises: [{ ...previousEntry, equipment: "bodyweight", sets: [set] }],
     })).toBe(true);
+    expect(isWorkoutReady({
+      ...baseDraft,
+      exercises: [{
+        ...previousEntry,
+        equipment: "resistance-band",
+        sets: [set],
+      }],
+    })).toBe(true);
+    expect(formatPreviousSet(set, "resistance-band")).toBe("Band × 10");
   });
 });

@@ -1,4 +1,5 @@
 import type { Exercise } from "../../../domain/fitness.ts";
+import { equipmentAbbreviation } from "../../../domain/equipment.ts";
 
 interface Props {
   exercises: Exercise[];
@@ -16,7 +17,7 @@ export function ExercisePickerResults({ exercises, onSelect }: Props) {
           type="button"
         >
           <span className={`equipment-icon ${exercise.equipment}`}>
-            {exercise.equipment === "dumbbell" ? "DB" : "BW"}
+            {equipmentAbbreviation(exercise.equipment)}
           </span>
           <span>
             <strong>{exercise.name}</strong>

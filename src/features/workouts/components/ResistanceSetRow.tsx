@@ -1,4 +1,8 @@
 import type { Equipment, ResistanceSet } from "../../../domain/fitness.ts";
+import {
+  equipmentSetLabel,
+  requiresWeight,
+} from "../../../domain/equipment.ts";
 import { formatPreviousSet } from "../resistanceProgress.ts";
 
 interface Props {
@@ -35,10 +39,14 @@ export function ResistanceSetRow(props: Props) {
         )}
       </span>
       <span className="previous-set">
-        {formatPreviousSet(props.previous, props.equipment === "bodyweight")}
+        {formatPreviousSet(props.previous, props.equipment)}
       </span>
-      {props.equipment === "bodyweight"
-        ? <span className="bodyweight-value">BW</span>
+      {!requiresWeight(props.equipment)
+        ? (
+          <span className="bodyweight-value">
+            {equipmentSetLabel(props.equipment)}
+          </span>
+        )
         : (
           <input
             aria-label={`Set ${props.index + 1} kg per dumbbell`}

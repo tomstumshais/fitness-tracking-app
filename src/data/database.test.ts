@@ -40,7 +40,7 @@ describe("database migrations", () => {
     legacy.close();
 
     const upgraded = await getDatabase();
-    expect(upgraded.version).toBe(3);
+    expect(upgraded.version).toBe(4);
     expect(upgraded.objectStoreNames.contains("workoutTemplates")).toBe(true);
     const drafts = upgraded.transaction("workoutDrafts").store;
     expect(drafts.indexNames.contains("by-source-event")).toBe(true);

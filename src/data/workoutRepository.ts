@@ -4,6 +4,7 @@ import type {
   ResistanceSet,
   ResistanceWorkoutDraft,
 } from "../domain/fitness.ts";
+import { requiresWeight } from "../domain/equipment.ts";
 import { getDatabase } from "./database.ts";
 
 function cleanName(name: string) {
@@ -152,7 +153,7 @@ function assertWorkoutComplete(draft: ResistanceWorkoutDraft) {
     exercise.sets.length > 0 &&
     exercise.sets.every((set) =>
       set.completed && set.repetitions > 0 &&
-      (exercise.equipment === "bodyweight" || (set.weightKg ?? 0) > 0)
+      (!requiresWeight(exercise.equipment) || (set.weightKg ?? 0) > 0)
     )
   );
   if (draft.exercises.length === 0 || sets.length === 0 || !validSets) {
