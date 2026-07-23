@@ -6,11 +6,9 @@ import {
 import { formatPreviousSet } from "../resistanceProgress.ts";
 
 interface Props {
-  canRemove: boolean;
   equipment: Equipment;
   index: number;
   onChange: (set: ResistanceSet) => void;
-  onRemove: () => void;
   previous?: ResistanceSet;
   set: ResistanceSet;
 }
@@ -26,20 +24,7 @@ export function ResistanceSetRow(props: Props) {
   };
   return (
     <div className={`set-row${props.set.completed ? " completed" : ""}`}>
-      {props.canRemove
-        ? (
-          <button
-            aria-label={`Remove set ${props.index + 1}`}
-            className="remove-set-button"
-            onClick={props.onRemove}
-            title={`Remove set ${props.index + 1}`}
-            type="button"
-          >
-            <span>{props.index + 1}</span>
-            <span aria-hidden="true">×</span>
-          </button>
-        )
-        : <span className="set-number">{props.index + 1}</span>}
+      <span className="set-number">{props.index + 1}</span>
       <span className="previous-set">
         {formatPreviousSet(props.previous, props.equipment)}
       </span>

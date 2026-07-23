@@ -70,13 +70,10 @@ export function WorkoutExerciseCard(
         </div>
         {entry.sets.map((set, index) => (
           <ResistanceSetRow
-            canRemove={entry.sets.length > 1}
             equipment={entry.equipment}
             index={index}
             key={set.id}
             onChange={(updated) => changeSet(index, updated)}
-            onRemove={() =>
-              onChangeSets(entry.sets.filter((item) => item.id !== set.id))}
             previous={previous?.sets[index]}
             set={set}
           />
@@ -85,9 +82,21 @@ export function WorkoutExerciseCard(
       {requiresWeight(entry.equipment) && (
         <p className="weight-note">kg is the weight of each dumbbell</p>
       )}
-      <button className="add-set-button" onClick={addSet} type="button">
-        ＋ Add set
-      </button>
+      <div className="set-actions">
+        <button className="add-set-button" onClick={addSet} type="button">
+          ＋ Add set
+        </button>
+        {entry.sets.length > 1 && (
+          <button
+            aria-label={`Remove set ${entry.sets.length}`}
+            className="remove-last-set-button"
+            onClick={() => onChangeSets(entry.sets.slice(0, -1))}
+            type="button"
+          >
+            − Remove last set
+          </button>
+        )}
+      </div>
     </article>
   );
 }

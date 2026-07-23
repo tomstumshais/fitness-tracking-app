@@ -1218,14 +1218,13 @@ h1 {
   height: 44px;
   place-items: center;
 }
-.remove-set-button {
-  display: grid;
-  width: 44px;
+.remove-last-set-button {
+  display: inline-flex;
+  min-width: 138px;
   height: 44px;
-  grid-template-columns: auto auto;
-  place-content: center;
-  gap: 4px;
-  padding: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
   border: 1px solid #f0d5d1;
   border-radius: 11px;
   color: #b42318;
@@ -1233,15 +1232,11 @@ h1 {
   font-size: 0.9rem;
   font-weight: 750;
 }
-.remove-set-button span:first-child {
-  color: var(--text);
-  font-size: 0.75rem;
-}
-.remove-set-button:hover {
+.remove-last-set-button:hover {
   border-color: #e6b9b2;
   background: #fff0ee;
 }
-.remove-set-button:focus-visible {
+.remove-last-set-button:focus-visible {
   outline: 3px solid rgba(180, 35, 24, 0.18);
   outline-offset: 2px;
 }
@@ -1273,9 +1268,16 @@ h1 {
   color: white;
   background: #1f936b;
 }
-.add-set-button {
-  min-height: 42px;
+.set-actions {
+  display: flex;
   margin-top: 10px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.add-set-button {
+  min-height: 44px;
   padding: 0 10px;
   border: 0;
   color: var(--primary);
