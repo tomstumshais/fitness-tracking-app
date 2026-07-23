@@ -102,6 +102,7 @@ export const predefinedExercises: Exercise[] = [
   exercise("dumbbell-biceps-curl", "Dumbbell Biceps Curl", "dumbbell", "arms"),
   exercise("hammer-curl", "Hammer Curl", "dumbbell", "arms"),
   exercise("concentration-curl", "Concentration Curl", "dumbbell", "arms"),
+  exercise("spider-curl", "Spider Curl", "dumbbell", "arms"),
   exercise(
     "dumbbell-triceps-extension",
     "Dumbbell Triceps Extension",

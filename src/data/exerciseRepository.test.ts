@@ -30,6 +30,7 @@ describe("exercise repository", () => {
         name: "Monster Walk with Band",
         equipment: "resistance-band",
       }),
+      expect.objectContaining({ name: "Spider Curl", equipment: "dumbbell" }),
     ]));
     expect(
       exercises.every((item) =>
