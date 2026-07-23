@@ -147,10 +147,24 @@ describe("daily fitness events", () => {
       screen.getByRole("button", { name: /Dumbbell Romanian Deadlift/ }),
     );
     await user.click(screen.getByRole("button", { name: "＋ Add set" }));
+    await user.click(screen.getByRole("button", { name: "＋ Add set" }));
+    await user.click(screen.getByRole("button", { name: "− Remove sets" }));
+    expect(screen.getByText("Remove")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "✓ Done removing" }))
+      .toBeInTheDocument();
+    await user.click(
+      screen.getByRole("button", { name: "✓ Done removing" }),
+    );
+    expect(screen.getByRole("button", { name: "＋ Add set" }))
+      .toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "− Remove sets" }));
+    await user.click(screen.getByRole("button", { name: "Remove set 3" }));
     expect(screen.getByRole("button", { name: "Remove set 2" }))
       .toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Remove set 2" }));
     expect(screen.queryByRole("button", { name: "Remove set 2" })).toBeNull();
+    expect(screen.getByRole("button", { name: "＋ Add set" }))
+      .toBeInTheDocument();
     await user.type(
       screen.getByRole("spinbutton", { name: "Set 1 kg per dumbbell" }),
       "22.5",

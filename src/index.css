@@ -1172,7 +1172,7 @@ h1 {
 .set-header, .set-row {
   display: grid;
   min-width: 280px;
-  grid-template-columns: 44px minmax(62px, 1fr) 58px 58px 38px;
+  grid-template-columns: 44px minmax(60px, 1fr) 56px 56px 44px;
   align-items: center;
   gap: 5px;
 }
@@ -1218,9 +1218,9 @@ h1 {
   height: 44px;
   place-items: center;
 }
-.remove-last-set-button {
+.remove-sets-button {
   display: inline-flex;
-  min-width: 138px;
+  min-width: 126px;
   height: 44px;
   align-items: center;
   justify-content: center;
@@ -1232,11 +1232,11 @@ h1 {
   font-size: 0.9rem;
   font-weight: 750;
 }
-.remove-last-set-button:hover {
+.remove-sets-button:hover {
   border-color: #e6b9b2;
   background: #fff0ee;
 }
-.remove-last-set-button:focus-visible {
+.remove-sets-button:focus-visible {
   outline: 3px solid rgba(180, 35, 24, 0.18);
   outline-offset: 2px;
 }
@@ -1254,14 +1254,29 @@ h1 {
 }
 .set-done {
   display: grid;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   place-items: center;
   border: 1px solid var(--border);
   border-radius: 50%;
   color: #96919d;
   background: white;
   font-size: 1.1rem;
+}
+.set-remove {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid #efc9c3;
+  border-radius: 50%;
+  color: #b42318;
+  background: #fff0ee;
+  font-size: 1.15rem;
+  font-weight: 750;
+}
+.set-table.removing .set-header {
+  color: #9f2e24;
 }
 .set-row.completed .set-done {
   border-color: #1f936b;
@@ -1275,6 +1290,9 @@ h1 {
   justify-content: space-between;
   gap: 8px;
   flex-wrap: wrap;
+}
+.set-actions.removing {
+  justify-content: flex-end;
 }
 .add-set-button {
   min-height: 44px;

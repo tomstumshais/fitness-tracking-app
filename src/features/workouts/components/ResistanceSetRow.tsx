@@ -9,7 +9,9 @@ interface Props {
   equipment: Equipment;
   index: number;
   onChange: (set: ResistanceSet) => void;
+  onRemove: () => void;
   previous?: ResistanceSet;
+  removing: boolean;
   set: ResistanceSet;
 }
 
@@ -53,17 +55,33 @@ export function ResistanceSetRow(props: Props) {
         type="number"
         value={props.set.repetitions || ""}
       />
-      <button
-        aria-label={`Mark set ${props.index + 1} ${
-          props.set.completed ? "not done" : "done"
-        }`}
-        className="set-done"
-        onClick={() =>
-          props.onChange({ ...props.set, completed: !props.set.completed })}
-        type="button"
-      >
-        {props.set.completed ? "✓" : "○"}
-      </button>
+      {props.removing
+        ? (
+          <button
+            aria-label={`Remove set ${props.index + 1}`}
+            className="set-remove"
+            onClick={props.onRemove}
+            type="button"
+          >
+            ×
+          </button>
+        )
+        : (
+          <button
+            aria-label={`Mark set ${props.index + 1} ${
+              props.set.completed ? "not done" : "done"
+            }`}
+            className="set-done"
+            onClick={() =>
+              props.onChange({
+                ...props.set,
+                completed: !props.set.completed,
+              })}
+            type="button"
+          >
+            {props.set.completed ? "✓" : "○"}
+          </button>
+        )}
     </div>
   );
 }
