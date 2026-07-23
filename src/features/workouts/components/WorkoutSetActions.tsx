@@ -15,7 +15,7 @@ export function WorkoutSetActions(props: Props) {
           onClick={props.onDoneRemoving}
           type="button"
         >
-          ✓ Done removing
+          Done removing
         </button>
       </div>
     );
@@ -31,7 +31,7 @@ export function WorkoutSetActions(props: Props) {
           onClick={props.onStartRemoving}
           type="button"
         >
-          − Remove sets
+          Remove sets
         </button>
       )}
     </div>

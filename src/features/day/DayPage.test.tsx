@@ -148,16 +148,16 @@ describe("daily fitness events", () => {
     );
     await user.click(screen.getByRole("button", { name: "＋ Add set" }));
     await user.click(screen.getByRole("button", { name: "＋ Add set" }));
-    await user.click(screen.getByRole("button", { name: "− Remove sets" }));
+    await user.click(screen.getByRole("button", { name: "Remove sets" }));
     expect(screen.getByText("Remove")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "✓ Done removing" }))
+    expect(screen.getByRole("button", { name: "Done removing" }))
       .toBeInTheDocument();
     await user.click(
-      screen.getByRole("button", { name: "✓ Done removing" }),
+      screen.getByRole("button", { name: "Done removing" }),
     );
     expect(screen.getByRole("button", { name: "＋ Add set" }))
       .toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "− Remove sets" }));
+    await user.click(screen.getByRole("button", { name: "Remove sets" }));
     await user.click(screen.getByRole("button", { name: "Remove set 3" }));
     expect(screen.getByRole("button", { name: "Remove set 2" }))
       .toBeInTheDocument();
