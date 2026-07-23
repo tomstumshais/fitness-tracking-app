@@ -146,6 +146,11 @@ describe("daily fitness events", () => {
     await user.click(
       screen.getByRole("button", { name: /Dumbbell Romanian Deadlift/ }),
     );
+    await user.click(screen.getByRole("button", { name: "＋ Add set" }));
+    expect(screen.getByRole("button", { name: "Remove set 2" }))
+      .toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Remove set 2" }));
+    expect(screen.queryByRole("button", { name: "Remove set 2" })).toBeNull();
     await user.type(
       screen.getByRole("spinbutton", { name: "Set 1 kg per dumbbell" }),
       "22.5",

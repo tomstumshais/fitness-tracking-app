@@ -26,18 +26,20 @@ export function ResistanceSetRow(props: Props) {
   };
   return (
     <div className={`set-row${props.set.completed ? " completed" : ""}`}>
-      <span className="set-number">
-        {props.index + 1}
-        {props.canRemove && (
+      {props.canRemove
+        ? (
           <button
             aria-label={`Remove set ${props.index + 1}`}
+            className="remove-set-button"
             onClick={props.onRemove}
+            title={`Remove set ${props.index + 1}`}
             type="button"
           >
-            ×
+            <span>{props.index + 1}</span>
+            <span aria-hidden="true">×</span>
           </button>
-        )}
-      </span>
+        )
+        : <span className="set-number">{props.index + 1}</span>}
       <span className="previous-set">
         {formatPreviousSet(props.previous, props.equipment)}
       </span>
