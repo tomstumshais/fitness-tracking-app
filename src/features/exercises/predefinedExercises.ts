@@ -40,6 +40,12 @@ export const predefinedExercises: Exercise[] = [
   exercise("dumbbell-step-up", "Dumbbell Step-Up", "dumbbell", "legs"),
   exercise("dumbbell-calf-raise", "Dumbbell Calf Raise", "dumbbell", "legs"),
   exercise(
+    "dumbbell-single-leg-standing-calf-raise",
+    "Dumbbell Single-Leg Standing Calf Raise",
+    "dumbbell",
+    "legs",
+  ),
+  exercise(
     "dumbbell-glute-bridge",
     "Dumbbell Glute Bridge",
     "dumbbell",
@@ -48,6 +54,12 @@ export const predefinedExercises: Exercise[] = [
   exercise(
     "monster-walk-band",
     "Monster Walk with Band",
+    "resistance-band",
+    "glutes",
+  ),
+  exercise(
+    "mini-band-lateral-walk",
+    "Mini Band Lateral Walk",
     "resistance-band",
     "glutes",
   ),
@@ -133,6 +145,12 @@ export const predefinedExercises: Exercise[] = [
     "glutes",
   ),
   exercise("calf-raise", "Calf Raise", "bodyweight", "legs"),
+  exercise(
+    "single-leg-standing-calf-raise",
+    "Single-Leg Standing Calf Raise",
+    "bodyweight",
+    "legs",
+  ),
   exercise("push-up", "Push-Up", "bodyweight", "chest"),
   exercise("knee-push-up", "Knee Push-Up", "bodyweight", "chest"),
   exercise("incline-push-up", "Incline Push-Up", "bodyweight", "chest"),
