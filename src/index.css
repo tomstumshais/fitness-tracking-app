@@ -222,6 +222,20 @@ h1 {
   background: #8c86a0;
   box-shadow: 0 0 0 1px rgba(28, 27, 34, 0.08);
 }
+.event-marker.counted {
+  display: grid;
+  width: auto;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  place-items: center;
+  border-radius: 999px;
+  color: white;
+  font-size: 0.58rem;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 1;
+}
 .event-marker.running {
   background: #1f936b;
 }
@@ -236,6 +250,9 @@ h1 {
 }
 .calendar-day.today .event-marker {
   background: white;
+}
+.calendar-day.today .event-marker.counted {
+  color: var(--primary);
 }
 .calendar-hint {
   margin: 16px 2px 0;
