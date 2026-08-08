@@ -43,6 +43,22 @@ describe("exercise repository", () => {
         name: "Mini Band Lateral Walk",
         equipment: "resistance-band",
       }),
+      expect.objectContaining({
+        name: "Dumbbell Floor Y Raise",
+        equipment: "dumbbell",
+      }),
+      expect.objectContaining({
+        name: "Incline Dumbbell Y Raise",
+        equipment: "dumbbell",
+      }),
+      expect.objectContaining({
+        name: "Floor Y Raise",
+        equipment: "bodyweight",
+      }),
+      expect.objectContaining({
+        name: "Incline Y Raise",
+        equipment: "bodyweight",
+      }),
     ]));
     expect(
       exercises.every((item) =>

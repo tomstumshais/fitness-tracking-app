@@ -97,6 +97,18 @@ export const predefinedExercises: Exercise[] = [
     "dumbbell",
     "shoulders",
   ),
+  exercise(
+    "dumbbell-floor-y-raise",
+    "Dumbbell Floor Y Raise",
+    "dumbbell",
+    "shoulders",
+  ),
+  exercise(
+    "incline-dumbbell-y-raise",
+    "Incline Dumbbell Y Raise",
+    "dumbbell",
+    "shoulders",
+  ),
   exercise("one-arm-dumbbell-row", "One-Arm Dumbbell Row", "dumbbell", "back"),
   exercise(
     "dumbbell-bent-over-row",
@@ -157,6 +169,13 @@ export const predefinedExercises: Exercise[] = [
   exercise("decline-push-up", "Decline Push-Up", "bodyweight", "chest"),
   exercise("diamond-push-up", "Diamond Push-Up", "bodyweight", "arms"),
   exercise("pike-push-up", "Pike Push-Up", "bodyweight", "shoulders"),
+  exercise("floor-y-raise", "Floor Y Raise", "bodyweight", "shoulders"),
+  exercise(
+    "incline-y-raise",
+    "Incline Y Raise",
+    "bodyweight",
+    "shoulders",
+  ),
   exercise("chair-dip", "Chair Dip", "bodyweight", "arms"),
   exercise("plank", "Plank", "bodyweight", "core"),
   exercise("side-plank", "Side Plank", "bodyweight", "core"),
