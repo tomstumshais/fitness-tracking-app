@@ -5,6 +5,7 @@ import { CalendarPage } from "../features/calendar/CalendarPage.tsx";
 import { DayPage } from "../features/day/DayPage.tsx";
 import { ExercisesPage } from "../features/exercises/ExercisesPage.tsx";
 import { SettingsPage } from "../features/settings/SettingsPage.tsx";
+import { TemplateEditorPage } from "../features/templates/TemplateEditorPage.tsx";
 import { TemplatesPage } from "../features/templates/TemplatesPage.tsx";
 import { WorkoutPage } from "../features/workouts/WorkoutPage.tsx";
 
@@ -23,6 +24,8 @@ export const routes: RouteObject[] = [
       { path: "workout/:draftId", element: <WorkoutPage /> },
       { path: "exercises", element: <ExercisesPage /> },
       { path: "templates", element: <TemplatesPage /> },
+      { path: "templates/new", element: <TemplateEditorPage /> },
+      { path: "templates/:templateId/edit", element: <TemplateEditorPage /> },
       { path: "settings", element: <SettingsPage /> },
       {
         path: "*",

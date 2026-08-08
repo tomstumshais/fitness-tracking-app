@@ -11,6 +11,7 @@ export function ExercisePickerResults({ exercises, onSelect }: Props) {
     <div className="exercise-picker-list">
       {exercises.map((exercise) => (
         <button
+          aria-label={exercise.name}
           className="exercise-picker-option"
           key={exercise.id}
           onClick={() => onSelect(exercise)}

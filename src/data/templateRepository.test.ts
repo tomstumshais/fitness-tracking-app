@@ -3,9 +3,11 @@ import type { ResistanceWorkoutDraft } from "../domain/fitness.ts";
 import { resetDatabaseForTests } from "./database.ts";
 import {
   createTemplateFromEvent,
+  createWorkoutTemplate,
   deleteWorkoutTemplate,
   listWorkoutTemplates,
   renameWorkoutTemplate,
+  updateWorkoutTemplate,
 } from "./templateRepository.ts";
 import {
   completeWorkoutDraft,
@@ -66,5 +68,32 @@ describe("workout template repository", () => {
     expect(renamed.updatedAt).toBeTruthy();
     await deleteWorkoutTemplate(template.id);
     expect(await listWorkoutTemplates()).toEqual([]);
+  });
+
+  it("creates and edits a template before it is used", async () => {
+    const template = await createWorkoutTemplate({
+      name: "  Upper   body ",
+      exercises: [{
+        id: "template-exercise-1",
+        exerciseId: "predefined:dumbbell-bench-press",
+        exerciseName: "Dumbbell Bench Press",
+        equipment: "dumbbell",
+        setCount: 3,
+      }],
+    });
+    const updated = await updateWorkoutTemplate(template.id, {
+      name: "Push day",
+      exercises: [{ ...template.exercises[0], setCount: 4 }],
+    });
+
+    expect(updated).toEqual(expect.objectContaining({
+      name: "Push day",
+      exercises: [expect.objectContaining({
+        id: "template-exercise-1",
+        setCount: 4,
+      })],
+    }));
+    const draft = await createDraftFromTemplate("2026-07-19", template.id);
+    expect(draft.exercises[0].sets).toHaveLength(4);
   });
 });

@@ -5,11 +5,16 @@ import {
 } from "@reduxjs/toolkit";
 import {
   createTemplateFromEvent,
+  createWorkoutTemplate,
   deleteWorkoutTemplate,
   listWorkoutTemplates,
   renameWorkoutTemplate,
+  updateWorkoutTemplate,
 } from "../../data/templateRepository.ts";
-import type { WorkoutTemplate } from "../../domain/fitness.ts";
+import type {
+  WorkoutTemplate,
+  WorkoutTemplateInput,
+} from "../../domain/fitness.ts";
 
 const templatesAdapter = createEntityAdapter<WorkoutTemplate>({
   sortComparer: (left, right) => left.name.localeCompare(right.name),
@@ -28,6 +33,11 @@ export const renameTemplate = createAsyncThunk(
   "templates/rename",
   ({ id, name }: { id: string; name: string }) =>
     renameWorkoutTemplate(id, name),
+);
+export const saveTemplate = createAsyncThunk(
+  "templates/save",
+  ({ id, input }: { id?: string; input: WorkoutTemplateInput }) =>
+    id ? updateWorkoutTemplate(id, input) : createWorkoutTemplate(input),
 );
 export const removeTemplate = createAsyncThunk(
   "templates/delete",
@@ -54,6 +64,7 @@ const templatesSlice = createSlice({
       })
       .addCase(saveWorkoutAsTemplate.fulfilled, templatesAdapter.addOne)
       .addCase(renameTemplate.fulfilled, templatesAdapter.upsertOne)
+      .addCase(saveTemplate.fulfilled, templatesAdapter.upsertOne)
       .addCase(removeTemplate.fulfilled, templatesAdapter.removeOne);
   },
 });
@@ -65,6 +76,7 @@ const selectors = templatesAdapter.getSelectors<StateWithTemplates>((state) =>
   state.templates
 );
 export const selectAllTemplates = selectors.selectAll;
+export const selectTemplateById = selectors.selectById;
 export const selectTemplatesStatus = (state: StateWithTemplates) =>
   state.templates.status;
 export default templatesSlice.reducer;

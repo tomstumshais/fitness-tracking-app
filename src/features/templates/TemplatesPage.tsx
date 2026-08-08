@@ -1,23 +1,16 @@
 import { format } from "date-fns";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
 import { EmptyState } from "../../components/ui/EmptyState.tsx";
 import type { WorkoutTemplate } from "../../domain/fitness.ts";
 import { startWorkoutFromTemplate } from "../workouts/workoutsSlice.ts";
-import { TemplateNameDialog } from "./components/TemplateNameDialog.tsx";
 import { WorkoutTemplateCard } from "./components/WorkoutTemplateCard.tsx";
-import {
-  removeTemplate,
-  renameTemplate,
-  selectAllTemplates,
-} from "./templatesSlice.ts";
+import { removeTemplate, selectAllTemplates } from "./templatesSlice.ts";
 
 export function TemplatesPage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const templates = useAppSelector(selectAllTemplates);
-  const [renaming, setRenaming] = useState<WorkoutTemplate | null>(null);
 
   const start = async (templateId: string) => {
     const draft = await dispatch(startWorkoutFromTemplate({
@@ -34,16 +27,23 @@ export function TemplatesPage() {
 
   return (
     <section className="page templates-page">
-      <p className="eyebrow">Reusable routines</p>
-      <h1>Templates</h1>
+      <div className="template-page-heading">
+        <div>
+          <p className="eyebrow">Reusable routines</p>
+          <h1>Templates</h1>
+        </div>
+        <Link className="primary-button" to="/templates/new">
+          + New template
+        </Link>
+      </div>
       <p className="page-intro">
-        Save a completed resistance workout as a template, then use its exercise
-        order and set counts on any training day.
+        Build a routine before training or save a completed resistance workout,
+        then reuse its exercise order and set counts on any day.
       </p>
       {templates.length === 0
         ? (
           <EmptyState
-            description="Open a completed resistance workout and choose Save as template."
+            description="Create a routine now or save a completed resistance workout as a template."
             icon="▤"
             title="No workout templates"
           />
@@ -54,26 +54,13 @@ export function TemplatesPage() {
               <WorkoutTemplateCard
                 key={template.id}
                 onDelete={() => void remove(template)}
-                onRename={() => setRenaming(template)}
+                onEdit={() => navigate(`/templates/${template.id}/edit`)}
                 onStart={() => void start(template.id)}
                 template={template}
               />
             ))}
           </div>
         )}
-      {renaming && (
-        <TemplateNameDialog
-          defaultName={renaming.name}
-          eyebrow="Edit template"
-          onClose={() => setRenaming(null)}
-          onSave={async (name) => {
-            await dispatch(renameTemplate({ id: renaming.id, name })).unwrap();
-            setRenaming(null);
-          }}
-          submitLabel="Save name"
-          title="Rename template"
-        />
-      )}
     </section>
   );
 }

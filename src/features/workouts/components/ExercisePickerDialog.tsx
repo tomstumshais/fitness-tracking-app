@@ -3,6 +3,7 @@ import type { Equipment, Exercise } from "../../../domain/fitness.ts";
 import { ExercisePickerResults } from "./ExercisePickerResults.tsx";
 
 interface Props {
+  eyebrow?: string;
   exercises: Exercise[];
   existingIds: string[];
   onClose: () => void;
@@ -41,7 +42,9 @@ export function ExercisePickerDialog(props: Props) {
       >
         <div className="dialog-heading">
           <div>
-            <p className="eyebrow">Resistance workout</p>
+            <p className="eyebrow">
+              {props.eyebrow ?? "Resistance workout"}
+            </p>
             <h2 id="exercise-picker-title">Add exercise</h2>
           </div>
           <button

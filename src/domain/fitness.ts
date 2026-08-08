@@ -121,3 +121,8 @@ export interface WorkoutTemplate {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface WorkoutTemplateInput {
+  name: string;
+  exercises: WorkoutTemplateExercise[];
+}

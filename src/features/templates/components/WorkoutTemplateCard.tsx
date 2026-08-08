@@ -2,7 +2,7 @@ import type { WorkoutTemplate } from "../../../domain/fitness.ts";
 
 interface Props {
   onDelete: () => void;
-  onRename: () => void;
+  onEdit: () => void;
   onStart: () => void;
   template: WorkoutTemplate;
 }
@@ -44,8 +44,8 @@ export function WorkoutTemplateCard(props: Props) {
         >
           Start today
         </button>
-        <button className="text-action" onClick={props.onRename} type="button">
-          Rename
+        <button className="text-action" onClick={props.onEdit} type="button">
+          Edit
         </button>
         <button
           className="text-action danger-text"
