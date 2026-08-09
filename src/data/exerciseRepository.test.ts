@@ -25,6 +25,7 @@ describe("exercise repository", () => {
         name: "Dumbbell Bench Press",
         equipment: "dumbbell",
       }),
+      expect.objectContaining({ name: "Dumbbell Fly", equipment: "dumbbell" }),
       expect.objectContaining({ name: "Push-Up", equipment: "bodyweight" }),
       expect.objectContaining({
         name: "Monster Walk with Band",
