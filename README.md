@@ -84,5 +84,11 @@ The planned first-version milestones are complete. Fitness data remains local to
 the browser or installed app, so JSON backups are recommended before changing
 devices or clearing browser storage.
 
+## Future milestone ideas
+
+- Early support and monetization: optionally add a discreet **Buy Me a Coffee**
+  button in Settings/About or the app footer, without interrupting workout
+  logging or placing features behind a paywall.
+
 The application is expected to be published at
 `https://tomstumshais.github.io/fitness-tracking-app/`.
