@@ -80,11 +80,14 @@ export interface ResistanceSet {
   completed: boolean;
 }
 
+export const EXERCISE_NOTE_MAX_LENGTH = 2_000;
+
 export interface ResistanceExerciseEntry {
   id: string;
   exerciseId: string;
   exerciseName: string;
   equipment: Equipment;
+  notes?: string;
   sets: ResistanceSet[];
 }
 

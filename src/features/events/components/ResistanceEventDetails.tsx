@@ -34,6 +34,9 @@ export function ResistanceEventDetails({ event, events }: Props) {
             <div>
               <strong>{exercise.exerciseName}</strong>
               <small>{formatSets(event, index)}</small>
+              {exercise.notes && (
+                <p className="completed-exercise-note">{exercise.notes}</p>
+              )}
             </div>
             <span className={`progress-label ${progress.tone}`}>
               {progress.label}

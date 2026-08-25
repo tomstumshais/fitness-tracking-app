@@ -10,6 +10,7 @@ interface Props {
   draft: ResistanceWorkoutDraft;
   events: FitnessEvent[];
   onAdd: () => void;
+  onChangeNotes: (entryId: string, notes: string) => void;
   onChangeSets: (entryId: string, sets: ResistanceSet[]) => void;
   onRemove: (entryId: string) => void;
 }
@@ -21,6 +22,7 @@ export function WorkoutContent(props: Props) {
         draft={props.draft}
         events={props.events}
         onAdd={props.onAdd}
+        onChangeNotes={props.onChangeNotes}
         onChangeSets={props.onChangeSets}
         onRemove={props.onRemove}
       />

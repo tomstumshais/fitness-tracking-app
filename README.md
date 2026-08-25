@@ -72,6 +72,8 @@ deno task build
 - Duplicating a completed workout into a new editable, incomplete draft
 - Set-by-set kg/repetition logging with previous-session values
 - Progressive-overload comparisons by dumbbell volume or unweighted repetitions
+- Previous-session performance comparisons for cardio, running, and walking
+- Autosaved resistance exercise notes with previous-note context
 - Completed workout cards and calendar activity markers
 - Versioned JSON backup with backward migration and validated, atomic restore of
   local user data, including templates

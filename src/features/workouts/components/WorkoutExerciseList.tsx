@@ -10,6 +10,7 @@ interface Props {
   draft: ResistanceWorkoutDraft;
   events: FitnessEvent[];
   onAdd: () => void;
+  onChangeNotes: (entryId: string, notes: string) => void;
   onChangeSets: (entryId: string, sets: ResistanceSet[]) => void;
   onRemove: (entryId: string) => void;
 }
@@ -21,6 +22,7 @@ export function WorkoutExerciseList(props: Props) {
         <WorkoutExerciseCard
           entry={entry}
           key={entry.id}
+          onChangeNotes={(notes) => props.onChangeNotes(entry.id, notes)}
           onChangeSets={(sets) => props.onChangeSets(entry.id, sets)}
           onRemove={() => props.onRemove(entry.id)}
           previous={findPreviousExercise(

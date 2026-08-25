@@ -4,7 +4,7 @@ import { normalizeEventActivityName } from "./activityNameMigration.ts";
 import {
   BACKUP_FORMAT,
   BACKUP_VERSION,
-  type FitnessBackupV3,
+  type FitnessBackupV4,
   parseFitnessBackup,
 } from "./backupSchema.ts";
 import { getDatabase } from "./database.ts";
@@ -16,7 +16,7 @@ export interface BackupSummary {
   workoutTemplates: number;
 }
 
-export async function createFitnessBackup(): Promise<FitnessBackupV3> {
+export async function createFitnessBackup(): Promise<FitnessBackupV4> {
   const database = await getDatabase();
   const transaction = database.transaction(
     [
@@ -57,7 +57,7 @@ export async function createFitnessBackup(): Promise<FitnessBackupV3> {
   });
 }
 
-function assertNoPredefinedNameCollision(backup: FitnessBackupV3) {
+function assertNoPredefinedNameCollision(backup: FitnessBackupV4) {
   const predefinedNames = new Set(
     predefinedExercises.map((exercise) => exercise.name.toLocaleLowerCase()),
   );
@@ -130,7 +130,7 @@ export async function restoreFitnessBackup(value: unknown) {
   return backup;
 }
 
-export function summarizeBackup(backup: FitnessBackupV3): BackupSummary {
+export function summarizeBackup(backup: FitnessBackupV4): BackupSummary {
   return {
     customExercises: backup.data.customExercises.length,
     fitnessEvents: backup.data.fitnessEvents.length,

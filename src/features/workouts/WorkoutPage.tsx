@@ -70,6 +70,7 @@ export function WorkoutPage() {
         draft={draft}
         events={workout.events}
         onAdd={() => setPickerOpen(true)}
+        onChangeNotes={workout.changeNotes}
         onChangeSets={workout.changeSets}
         onRemove={workout.removeExercise}
       />

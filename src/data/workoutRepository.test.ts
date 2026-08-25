@@ -90,6 +90,7 @@ describe("resistance workout repository", () => {
         exerciseId: "dumbbell-bench-press",
         exerciseName: "Dumbbell Bench Press",
         equipment: "dumbbell",
+        notes: "  Keep shoulder blades down  ",
         sets: [{
           id: "set-1",
           weightKg: 20,
@@ -99,6 +100,7 @@ describe("resistance workout repository", () => {
       }],
     });
     const original = (await completeWorkoutDraft(created.id)).event;
+    expect(original.exercises[0].notes).toBe("Keep shoulder blades down");
 
     const edit = await createEditDraft(original.id);
     edit.exercises[0].sets[0].repetitions = 11;
@@ -115,6 +117,7 @@ describe("resistance workout repository", () => {
     );
     expect(copy.sourceEventId).toBeUndefined();
     expect(copy.exercises[0].id).not.toBe(original.exercises[0].id);
+    expect(copy.exercises[0].notes).toBeUndefined();
     expect(copy.exercises[0].sets[0]).toEqual(expect.objectContaining({
       weightKg: 20,
       repetitions: 11,

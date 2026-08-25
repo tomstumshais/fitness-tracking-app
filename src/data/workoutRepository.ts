@@ -4,6 +4,7 @@ import type {
   ResistanceSet,
   ResistanceWorkoutDraft,
 } from "../domain/fitness.ts";
+import { EXERCISE_NOTE_MAX_LENGTH } from "../domain/fitness.ts";
 import { requiresWeight } from "../domain/equipment.ts";
 import { getDatabase } from "./database.ts";
 
@@ -23,11 +24,30 @@ function draftSet(
 }
 
 function copyExercises(exercises: ResistanceExerciseEntry[]) {
-  return exercises.map((exercise) => ({
+  return exercises.map(({ notes: _notes, ...exercise }) => ({
     ...exercise,
     id: crypto.randomUUID(),
     sets: exercise.sets.map((set) => draftSet(set)),
   }));
+}
+
+function cleanExerciseNotes(exercises: ResistanceExerciseEntry[]) {
+  return exercises.map((exercise) => {
+    const notes = exercise.notes?.trim();
+    return { ...exercise, notes: notes || undefined };
+  });
+}
+
+function assertExerciseNotesValid(exercises: ResistanceExerciseEntry[]) {
+  if (
+    exercises.some((exercise) =>
+      (exercise.notes?.length ?? 0) > EXERCISE_NOTE_MAX_LENGTH
+    )
+  ) {
+    throw new Error(
+      `Exercise notes must be ${EXERCISE_NOTE_MAX_LENGTH} characters or fewer`,
+    );
+  }
 }
 
 export async function listWorkoutDrafts() {
@@ -129,6 +149,7 @@ export async function duplicateResistanceEvent(
 }
 
 export async function saveWorkoutDraft(draft: ResistanceWorkoutDraft) {
+  assertExerciseNotesValid(draft.exercises);
   const saved = {
     ...draft,
     name: cleanName(draft.name),
@@ -183,7 +204,7 @@ export async function completeWorkoutDraft(id: string) {
     date: draft.date,
     type: "resistance",
     name: cleanName(draft.name),
-    exercises: draft.exercises,
+    exercises: cleanExerciseNotes(draft.exercises),
     createdAt: source?.createdAt ?? timestamp,
     updatedAt: timestamp,
   };

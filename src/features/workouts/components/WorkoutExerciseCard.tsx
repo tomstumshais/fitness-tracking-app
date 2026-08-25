@@ -4,17 +4,19 @@ import type {
 } from "../../../domain/fitness.ts";
 import { equipmentAbbreviation } from "../../../domain/equipment.ts";
 import { getProgressSummary } from "../resistanceProgress.ts";
+import { ExerciseNoteEditor } from "./ExerciseNoteEditor.tsx";
 import { WorkoutSetTable } from "./WorkoutSetTable.tsx";
 
 interface Props {
   entry: ResistanceExerciseEntry;
+  onChangeNotes: (notes: string) => void;
   onChangeSets: (sets: ResistanceSet[]) => void;
   onRemove: () => void;
   previous?: ResistanceExerciseEntry;
 }
 
 export function WorkoutExerciseCard(
-  { entry, onChangeSets, onRemove, previous }: Props,
+  { entry, onChangeNotes, onChangeSets, onRemove, previous }: Props,
 ) {
   const progress = getProgressSummary(entry, previous);
   return (
@@ -38,6 +40,12 @@ export function WorkoutExerciseCard(
           ×
         </button>
       </div>
+      <ExerciseNoteEditor
+        exerciseName={entry.exerciseName}
+        notes={entry.notes}
+        onChange={onChangeNotes}
+        previousNotes={previous?.notes}
+      />
       <WorkoutSetTable
         entry={entry}
         onChangeSets={onChangeSets}

@@ -1,9 +1,9 @@
 import { format } from "date-fns";
-import type { FitnessBackupV3 } from "../../../data/backupSchema.ts";
+import type { FitnessBackupV4 } from "../../../data/backupSchema.ts";
 import { summarizeBackup } from "../../../data/backupRepository.ts";
 
 interface RestoreBackupDialogProps {
-  backup: FitnessBackupV3;
+  backup: FitnessBackupV4;
   restoring: boolean;
   onCancel: () => void;
   onConfirm: () => void;

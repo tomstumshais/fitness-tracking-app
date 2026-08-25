@@ -4,7 +4,9 @@ import type {
   ResistanceEvent,
 } from "../../../domain/fitness.ts";
 import { getActivityIcon } from "../cardioActivities.ts";
+import { ActivityComparison } from "./ActivityComparison.tsx";
 import { EventActions } from "./EventActions.tsx";
+import { EventMetrics } from "./EventMetrics.tsx";
 import { ResistanceEventDetails } from "./ResistanceEventDetails.tsx";
 
 interface Props {
@@ -18,12 +20,6 @@ interface Props {
 }
 
 const icons = { running: "🏃", walking: "🚶", resistance: "🏋️" };
-
-function formatPace(durationMinutes: number, distanceKm: number) {
-  const totalSeconds = Math.round(durationMinutes * 60 / distanceKm);
-  const minutes = Math.floor(totalSeconds / 60);
-  return `${minutes}:${String(totalSeconds % 60).padStart(2, "0")} /km`;
-}
 
 function getTitle(event: FitnessEvent) {
   if (event.type === "cardio" || event.type === "resistance") return event.name;
@@ -42,12 +38,6 @@ function getKind(event: FitnessEvent) {
 
 export function EventCard(props: Props) {
   const { allEvents, event } = props;
-  const setCount = event.type === "resistance"
-    ? event.exercises.reduce(
-      (total, exercise) => total + exercise.sets.length,
-      0,
-    )
-    : 0;
   return (
     <article className={`event-card ${event.type}`}>
       <div className={`event-card-icon ${event.type}`}>{getIcon(event)}</div>
@@ -56,42 +46,10 @@ export function EventCard(props: Props) {
           <h2>{getTitle(event)}</h2>
           <span className={`event-kind ${event.type}`}>{getKind(event)}</span>
         </div>
-        <div className="event-metrics">
-          {event.durationMinutes && (
-            <span>
-              <strong>{event.durationMinutes}</strong> min
-            </span>
-          )}
-          {event.type === "running" || event.type === "walking"
-            ? (
-              <>
-                <span>
-                  <strong>{event.distanceKm}</strong> km
-                </span>
-                <span>
-                  <strong>
-                    {formatPace(event.durationMinutes, event.distanceKm)}
-                  </strong>
-                </span>
-              </>
-            )
-            : event.type === "cardio" && (
-              <span>
-                <strong>{event.intensity}</strong> intensity
-              </span>
-            )}
-          {event.type === "resistance" && (
-            <>
-              <span>
-                <strong>{event.exercises.length}</strong>{" "}
-                {event.exercises.length === 1 ? "exercise" : "exercises"}
-              </span>
-              <span>
-                <strong>{setCount}</strong> {setCount === 1 ? "set" : "sets"}
-              </span>
-            </>
-          )}
-        </div>
+        <EventMetrics event={event} />
+        {event.type !== "resistance" && (
+          <ActivityComparison event={event} events={allEvents} />
+        )}
         {event.type === "resistance" && (
           <ResistanceEventDetails event={event} events={allEvents} />
         )}

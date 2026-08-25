@@ -8,7 +8,11 @@ import { getDatabase, resetDatabaseForTests } from "./database.ts";
 import { createFitnessEvent, listFitnessEvents } from "./eventRepository.ts";
 import { createCustomExercise, listExercises } from "./exerciseRepository.ts";
 import { listWorkoutTemplates } from "./templateRepository.ts";
-import { createWorkoutDraft, listWorkoutDrafts } from "./workoutRepository.ts";
+import {
+  createWorkoutDraft,
+  listWorkoutDrafts,
+  saveWorkoutDraft,
+} from "./workoutRepository.ts";
 import type { WorkoutTemplate } from "../domain/fitness.ts";
 
 describe("fitness backup repository", () => {
@@ -27,7 +31,26 @@ describe("fitness backup repository", () => {
       durationMinutes: 30,
       distanceKm: 5,
     });
-    const draft = await createWorkoutDraft("2026-07-19", "Sunday legs");
+    const createdDraft = await createWorkoutDraft(
+      "2026-07-19",
+      "Sunday legs",
+    );
+    const draft = await saveWorkoutDraft({
+      ...createdDraft,
+      exercises: [{
+        id: "draft-entry:backup-test",
+        exerciseId: "dumbbell-goblet-squat",
+        exerciseName: "Dumbbell Goblet Squat",
+        equipment: "dumbbell",
+        notes: "Keep the chest tall",
+        sets: [{
+          id: "draft-set:backup-test",
+          weightKg: 20,
+          repetitions: 10,
+          completed: false,
+        }],
+      }],
+    });
     const database = await getDatabase();
     const timestamp = new Date().toISOString();
     const template: WorkoutTemplate = {
@@ -105,7 +128,7 @@ describe("fitness backup repository", () => {
       data: legacyData,
     });
 
-    expect(migrated.version).toBe(3);
+    expect(migrated.version).toBe(4);
     expect(migrated.data.workoutTemplates).toEqual([]);
     expect(migrated.data.workoutDrafts).toHaveLength(1);
   });
@@ -114,8 +137,15 @@ describe("fitness backup repository", () => {
     const current = await createFitnessBackup();
     const migrated = readFitnessBackup({ ...current, version: 2 });
 
-    expect(migrated.version).toBe(3);
+    expect(migrated.version).toBe(4);
     expect(migrated.data.workoutTemplates).toEqual([]);
+  });
+
+  it("migrates version 3 backups to the exercise-note format", async () => {
+    const current = await createFitnessBackup();
+    const migrated = readFitnessBackup({ ...current, version: 3 });
+
+    expect(migrated.version).toBe(4);
   });
 
   it("renames legacy cycling activities when restoring a backup", async () => {

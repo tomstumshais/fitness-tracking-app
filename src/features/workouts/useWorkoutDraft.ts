@@ -67,6 +67,16 @@ export function useWorkoutDraft(id: string) {
       });
     }
   };
+  const changeNotes = (entryId: string, notes: string) => {
+    if (draft) {
+      void commit({
+        ...draft,
+        exercises: draft.exercises.map((entry) =>
+          entry.id === entryId ? { ...entry, notes: notes || undefined } : entry
+        ),
+      });
+    }
+  };
   const finish = () => dispatch(finishWorkout(id)).unwrap();
   const discard = () => dispatch(discardWorkout(id)).unwrap();
   const rename = async (name: string) => {
@@ -81,6 +91,7 @@ export function useWorkoutDraft(id: string) {
 
   return {
     addExercise,
+    changeNotes,
     changeSets,
     discard,
     draft,

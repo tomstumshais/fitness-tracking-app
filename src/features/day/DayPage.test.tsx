@@ -12,14 +12,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AppBootstrap } from "../../app/AppBootstrap.tsx";
 import { createAppStore } from "../../app/store.ts";
 import { resetDatabaseForTests } from "../../data/database.ts";
+import { createFitnessEvent } from "../../data/eventRepository.ts";
 import { DayPage } from "./DayPage.tsx";
 import { WorkoutPage } from "../workouts/WorkoutPage.tsx";
 
-function renderDay() {
+function renderDay(date = "2026-07-18") {
   return render(
     <Provider store={createAppStore()}>
       <AppBootstrap>
-        <MemoryRouter initialEntries={["/day/2026-07-18"]}>
+        <MemoryRouter initialEntries={[`/day/${date}`]}>
           <Routes>
             <Route path="day/:date" element={<DayPage />} />
             <Route path="workout/:draftId" element={<WorkoutPage />} />
@@ -123,6 +124,33 @@ describe("daily fitness events", () => {
     expect(card).not.toHaveTextContent("cardio");
   });
 
+  it("compares an activity with its latest matching completed session", async () => {
+    await createFitnessEvent({
+      type: "cardio",
+      date: "2026-07-17",
+      name: "Indoor cycling",
+      durationMinutes: 35,
+      intensity: "moderate",
+    });
+    await createFitnessEvent({
+      type: "cardio",
+      date: "2026-07-18",
+      name: "Indoor cycling",
+      durationMinutes: 40,
+      intensity: "moderate",
+    });
+
+    renderDay();
+
+    const comparison = await screen.findByLabelText(
+      "Comparison with previous Indoor cycling session",
+    );
+    expect(comparison).toHaveTextContent("Previous");
+    expect(comparison).toHaveTextContent("35 min · Moderate intensity");
+    expect(comparison).toHaveTextContent("Longer at same intensity");
+    expect(comparison).toHaveTextContent("+5 min (+14%)");
+  });
+
   it("logs and completes a resistance workout set by set", async () => {
     const user = userEvent.setup();
     renderDay();
@@ -146,6 +174,14 @@ describe("daily fitness events", () => {
     await user.click(
       screen.getByRole("button", { name: /Dumbbell Romanian Deadlift/ }),
     );
+    await user.click(screen.getByRole("button", { name: "Add note" }));
+    await user.type(
+      screen.getByRole("textbox", {
+        name: "Dumbbell Romanian Deadlift note",
+      }),
+      "Keep the dumbbells close to the legs",
+    );
+    await user.click(screen.getByRole("button", { name: "Done" }));
     await user.click(screen.getByRole("button", { name: "＋ Add set" }));
     await user.click(screen.getByRole("button", { name: "＋ Add set" }));
     await user.click(screen.getByRole("button", { name: "Remove sets" }));
@@ -181,6 +217,7 @@ describe("daily fitness events", () => {
       .toBeInTheDocument();
     expect(card).toHaveTextContent("1 exercise");
     expect(card).toHaveTextContent("1 set");
+    expect(card).toHaveTextContent("Keep the dumbbells close to the legs");
 
     await user.click(within(card).getByRole("button", { name: "Edit" }));
     await user.click(
@@ -215,5 +252,8 @@ describe("daily fitness events", () => {
     expect(screen.getByRole("spinbutton", { name: "Set 1 kg per dumbbell" }))
       .toHaveValue(null);
     expect(screen.getByText("22.5 × 8")).toBeInTheDocument();
+    expect(screen.getByText("Previous note")).toBeInTheDocument();
+    expect(screen.getByText("Keep the dumbbells close to the legs"))
+      .toBeInTheDocument();
   });
 });

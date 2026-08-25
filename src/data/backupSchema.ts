@@ -8,7 +8,7 @@ import type {
 import type { SettingRecord } from "./database.ts";
 
 export const BACKUP_FORMAT = "fitness-log-backup";
-export const BACKUP_VERSION = 3;
+export const BACKUP_VERSION = 4;
 
 export interface FitnessBackupV1 {
   format: typeof BACKUP_FORMAT;
@@ -33,9 +33,16 @@ export interface FitnessBackupV2 {
 
 export interface FitnessBackupV3 {
   format: typeof BACKUP_FORMAT;
-  version: typeof BACKUP_VERSION;
+  version: 3;
   exportedAt: string;
   data: FitnessBackupV2["data"];
+}
+
+export interface FitnessBackupV4 {
+  format: typeof BACKUP_FORMAT;
+  version: typeof BACKUP_VERSION;
+  exportedAt: string;
+  data: FitnessBackupV3["data"];
 }
 
 const identifier = z.string().trim().min(1);
@@ -77,6 +84,7 @@ const resistanceExercise = z.object({
   exerciseId: identifier,
   exerciseName: name,
   equipment,
+  notes,
   sets: z.array(resistanceSet).max(100),
 }).strict();
 
@@ -211,7 +219,14 @@ const fitnessBackupV2Schema: z.ZodType<FitnessBackupV2> = z.object({
   data: z.object(backupDataV2).strict(),
 }).strict();
 
-export const fitnessBackupSchema: z.ZodType<FitnessBackupV3> = z.object({
+const fitnessBackupV3Schema: z.ZodType<FitnessBackupV3> = z.object({
+  format: z.literal(BACKUP_FORMAT),
+  version: z.literal(3),
+  exportedAt: timestamp,
+  data: z.object(backupDataV2).strict(),
+}).strict();
+
+export const fitnessBackupSchema: z.ZodType<FitnessBackupV4> = z.object({
   format: z.literal(BACKUP_FORMAT),
   version: z.literal(BACKUP_VERSION),
   exportedAt: timestamp,
@@ -303,6 +318,13 @@ export function parseFitnessBackup(value: unknown) {
     value.version === 2
   ) {
     const backup = fitnessBackupV2Schema.parse(value);
+    return fitnessBackupSchema.parse({ ...backup, version: BACKUP_VERSION });
+  }
+  if (
+    typeof value === "object" && value !== null && "version" in value &&
+    value.version === 3
+  ) {
+    const backup = fitnessBackupV3Schema.parse(value);
     return fitnessBackupSchema.parse({ ...backup, version: BACKUP_VERSION });
   }
   return fitnessBackupSchema.parse(value);
