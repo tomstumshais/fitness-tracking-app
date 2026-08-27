@@ -123,6 +123,12 @@ export const predefinedExercises: Exercise[] = [
     "dumbbell",
     "back",
   ),
+  exercise(
+    "resistance-band-lat-pulldown",
+    "Resistance Band Lat Pulldown",
+    "resistance-band",
+    "back",
+  ),
   exercise("dumbbell-shrug", "Dumbbell Shrug", "dumbbell", "back"),
   exercise("dumbbell-biceps-curl", "Dumbbell Biceps Curl", "dumbbell", "arms"),
   exercise("hammer-curl", "Hammer Curl", "dumbbell", "arms"),
