@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
 import type {
   Exercise,
@@ -26,21 +27,25 @@ export function useWorkoutDraft(id: string) {
   const status = useAppSelector(selectWorkoutsStatus);
   const events = useAppSelector(selectAllEvents);
   const exercises = useAppSelector(selectAllExercises);
+  const draftRef = useRef(draft);
+  draftRef.current = draft;
 
   const commit = (next: ResistanceWorkoutDraft) => {
     const updated = { ...next, updatedAt: new Date().toISOString() };
+    draftRef.current = updated;
     dispatch(draftUpdated(updated));
     return dispatch(persistWorkout(updated));
   };
   const addExercise = (exercise: Exercise) => {
-    if (!draft) return;
-    const previous = findPreviousExercise(events, draft, exercise.id);
+    const current = draftRef.current;
+    if (!current) return;
+    const previous = findPreviousExercise(events, current, exercise.id);
     const sets = previous?.sets.length
       ? previous.sets.map((set) => newSet(set.weightKg, set.repetitions))
       : [newSet(null)];
     void commit({
-      ...draft,
-      exercises: [...draft.exercises, {
+      ...current,
+      exercises: [...current.exercises, {
         id: crypto.randomUUID(),
         exerciseId: exercise.id,
         exerciseName: exercise.name,
@@ -50,28 +55,31 @@ export function useWorkoutDraft(id: string) {
     });
   };
   const removeExercise = (entryId: string) => {
-    if (draft) {
+    const current = draftRef.current;
+    if (current) {
       void commit({
-        ...draft,
-        exercises: draft.exercises.filter((entry) => entry.id !== entryId),
+        ...current,
+        exercises: current.exercises.filter((entry) => entry.id !== entryId),
       });
     }
   };
   const changeSets = (entryId: string, sets: ResistanceSet[]) => {
-    if (draft) {
+    const current = draftRef.current;
+    if (current) {
       void commit({
-        ...draft,
-        exercises: draft.exercises.map((entry) =>
+        ...current,
+        exercises: current.exercises.map((entry) =>
           entry.id === entryId ? { ...entry, sets } : entry
         ),
       });
     }
   };
   const changeNotes = (entryId: string, notes: string) => {
-    if (draft) {
+    const current = draftRef.current;
+    if (current) {
       void commit({
-        ...draft,
-        exercises: draft.exercises.map((entry) =>
+        ...current,
+        exercises: current.exercises.map((entry) =>
           entry.id === entryId ? { ...entry, notes: notes || undefined } : entry
         ),
       });
@@ -80,11 +88,13 @@ export function useWorkoutDraft(id: string) {
   const finish = () => dispatch(finishWorkout(id)).unwrap();
   const discard = () => dispatch(discardWorkout(id)).unwrap();
   const rename = async (name: string) => {
-    if (!draft) throw new Error("Workout draft not found");
+    const current = draftRef.current;
+    if (!current) throw new Error("Workout draft not found");
     try {
-      await commit({ ...draft, name }).unwrap();
+      await commit({ ...current, name }).unwrap();
     } catch (error) {
-      dispatch(draftUpdated(draft));
+      draftRef.current = current;
+      dispatch(draftUpdated(current));
       throw error;
     }
   };

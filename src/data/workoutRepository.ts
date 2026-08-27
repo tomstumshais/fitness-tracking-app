@@ -8,6 +8,8 @@ import { EXERCISE_NOTE_MAX_LENGTH } from "../domain/fitness.ts";
 import { requiresWeight } from "../domain/equipment.ts";
 import { getDatabase } from "./database.ts";
 
+const pendingDraftSaves = new Map<string, Promise<ResistanceWorkoutDraft>>();
+
 function cleanName(name: string) {
   return name.trim().replace(/\s+/g, " ");
 }
@@ -155,12 +157,25 @@ export async function saveWorkoutDraft(draft: ResistanceWorkoutDraft) {
     name: cleanName(draft.name),
     updatedAt: new Date().toISOString(),
   };
-  const database = await getDatabase();
-  await database.put("workoutDrafts", saved);
-  return saved;
+  const previousSave: Promise<unknown> = pendingDraftSaves.get(draft.id) ??
+    Promise.resolve();
+  const save = previousSave.catch(() => undefined).then(async () => {
+    const database = await getDatabase();
+    await database.put("workoutDrafts", saved);
+    return saved;
+  });
+  pendingDraftSaves.set(draft.id, save);
+  try {
+    return await save;
+  } finally {
+    if (pendingDraftSaves.get(draft.id) === save) {
+      pendingDraftSaves.delete(draft.id);
+    }
+  }
 }
 
 export async function deleteWorkoutDraft(id: string) {
+  await pendingDraftSaves.get(id);
   const database = await getDatabase();
   const draft = await database.get("workoutDrafts", id);
   if (!draft) throw new Error("Workout draft not found");
@@ -183,6 +198,7 @@ function assertWorkoutComplete(draft: ResistanceWorkoutDraft) {
 }
 
 export async function completeWorkoutDraft(id: string) {
+  await pendingDraftSaves.get(id);
   const database = await getDatabase();
   const transaction = database.transaction(
     ["workoutDrafts", "fitnessEvents"],

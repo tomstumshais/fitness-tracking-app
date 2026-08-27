@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { EXERCISE_NOTE_MAX_LENGTH } from "../../../domain/fitness.ts";
 
 interface Props {
@@ -11,6 +11,23 @@ interface Props {
 export function ExerciseNoteEditor(props: Props) {
   const inputId = useId();
   const [editing, setEditing] = useState(false);
+  const [draftNotes, setDraftNotes] = useState(props.notes ?? "");
+  const saveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const clearSaveTimer = () => {
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = undefined;
+  };
+  const saveNow = () => {
+    clearSaveTimer();
+    props.onChange(draftNotes);
+  };
+  const changeNotes = (notes: string) => {
+    setDraftNotes(notes);
+    clearSaveTimer();
+    saveTimer.current = setTimeout(() => props.onChange(notes), 300);
+  };
+  useEffect(() => () => clearSaveTimer(), []);
+
   return (
     <div className="exercise-notes">
       {props.previousNotes && (
@@ -29,26 +46,30 @@ export function ExerciseNoteEditor(props: Props) {
               aria-label={`${props.exerciseName} note`}
               id={inputId}
               maxLength={EXERCISE_NOTE_MAX_LENGTH}
-              onChange={(event) => props.onChange(event.target.value)}
+              onBlur={saveNow}
+              onChange={(event) => changeNotes(event.target.value)}
               placeholder="Technique, discomfort, setup or a reminder for next time"
               rows={3}
-              value={props.notes ?? ""}
+              value={draftNotes}
             />
             <button
               className="exercise-note-done"
-              onClick={() => setEditing(false)}
+              onClick={() => {
+                saveNow();
+                setEditing(false);
+              }}
               type="button"
             >
               Done
             </button>
           </div>
         )
-        : props.notes
+        : draftNotes
         ? (
           <div className="current-exercise-note">
             <div>
               <span>Workout note</span>
-              <p>{props.notes}</p>
+              <p>{draftNotes}</p>
             </div>
             <button onClick={() => setEditing(true)} type="button">
               Edit note

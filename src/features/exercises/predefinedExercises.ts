@@ -125,7 +125,7 @@ export const predefinedExercises: Exercise[] = [
   ),
   exercise(
     "resistance-band-lat-pulldown",
-    "Resistance Band Lat Pulldown",
+    "Lat Pulldown with Band",
     "resistance-band",
     "back",
   ),

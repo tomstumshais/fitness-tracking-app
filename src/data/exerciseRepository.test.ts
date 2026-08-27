@@ -45,7 +45,7 @@ describe("exercise repository", () => {
         equipment: "resistance-band",
       }),
       expect.objectContaining({
-        name: "Resistance Band Lat Pulldown",
+        name: "Lat Pulldown with Band",
         equipment: "resistance-band",
       }),
       expect.objectContaining({
