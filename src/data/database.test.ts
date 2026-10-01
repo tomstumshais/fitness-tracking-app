@@ -39,7 +39,7 @@ describe("database migrations", () => {
     });
     await legacy.put("fitnessEvents", {
       id: "event:legacy-resistance",
-      date: "2026-07-19",
+      date: "2026-09-11",
       type: "resistance",
       name: "Upper body",
       exercises: [{
@@ -54,8 +54,8 @@ describe("database migrations", () => {
           completed: true,
         }],
       }],
-      createdAt: "2026-07-19T10:00:00.000Z",
-      updatedAt: "2026-07-19T10:00:00.000Z",
+      createdAt: "2026-09-11T10:00:00.000Z",
+      updatedAt: "2026-09-11T10:00:00.000Z",
     });
     await legacy.put("workoutDrafts", {
       id: "draft:legacy-resistance",
@@ -79,7 +79,7 @@ describe("database migrations", () => {
     legacy.close();
 
     const upgraded = await getDatabase();
-    expect(upgraded.version).toBe(5);
+    expect(upgraded.version).toBe(6);
     expect(upgraded.objectStoreNames.contains("workoutTemplates")).toBe(true);
     const drafts = upgraded.transaction("workoutDrafts").store;
     expect(drafts.indexNames.contains("by-source-event")).toBe(true);
@@ -101,10 +101,19 @@ describe("database migrations", () => {
     expect(
       event?.type === "resistance" &&
         event.exercises[0].sets[0].weightKg,
-    ).toBe(21);
+    ).toBe(22);
     expect(draft?.exercises[0].sets[0].weightKg).toBe(25);
     expect(
       await upgraded.get("settings", "migration:5:dumbbell-grip-weight"),
     ).toEqual({ key: "migration:5:dumbbell-grip-weight", value: true });
+    expect(
+      await upgraded.get(
+        "settings",
+        "migration:6:2026-09-11-dumbbell-weight",
+      ),
+    ).toEqual({
+      key: "migration:6:2026-09-11-dumbbell-weight",
+      value: true,
+    });
   });
 });

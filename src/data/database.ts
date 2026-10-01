@@ -11,9 +11,12 @@ import { addDumbbellGripWeight } from "./dumbbellWeightMigration.ts";
 import { predefinedExercises } from "../features/exercises/predefinedExercises.ts";
 
 const DATABASE_NAME = "fitness-log";
-const DATABASE_VERSION = 5;
+const DATABASE_VERSION = 6;
 const ACTIVITY_NAME_MIGRATION_KEY = "migration:3:activity-names";
 const DUMBBELL_WEIGHT_MIGRATION_KEY = "migration:5:dumbbell-grip-weight";
+const SEPTEMBER_11_WEIGHT_MIGRATION_KEY =
+  "migration:6:2026-09-11-dumbbell-weight";
+const SEPTEMBER_11_2026 = "2026-09-11";
 
 export interface SettingRecord {
   key: string;
@@ -94,6 +97,44 @@ async function migrateDumbbellGripWeights(
   await transaction.done;
 }
 
+async function migrateSeptember11DumbbellWeights(
+  database: IDBPDatabase<FitnessDatabaseSchema>,
+) {
+  const transaction = database.transaction(
+    ["fitnessEvents", "workoutDrafts", "settings"],
+    "readwrite",
+  );
+  const settings = transaction.objectStore("settings");
+  if (!await settings.get(SEPTEMBER_11_WEIGHT_MIGRATION_KEY)) {
+    const timestamp = new Date().toISOString();
+    const events = transaction.objectStore("fitnessEvents");
+    const drafts = transaction.objectStore("workoutDrafts");
+    const [storedEvents, storedDrafts] = await Promise.all([
+      events.index("by-date").getAll(SEPTEMBER_11_2026),
+      drafts.getAll(),
+    ]);
+    const resistanceEvents = storedEvents.filter((event) =>
+      event.type === "resistance"
+    );
+    const eventIds = new Set(resistanceEvents.map((event) => event.id));
+    const eventWrites = resistanceEvents.map((event) => {
+      const migrated = addDumbbellGripWeight(event, timestamp);
+      return migrated === event ? undefined : events.put(migrated);
+    });
+    const draftWrites = storedDrafts.map((draft) => {
+      if (!draft.sourceEventId || !eventIds.has(draft.sourceEventId)) return;
+      const migrated = addDumbbellGripWeight(draft, timestamp);
+      return migrated === draft ? undefined : drafts.put(migrated);
+    });
+    await Promise.all([...eventWrites, ...draftWrites]);
+    await settings.put({
+      key: SEPTEMBER_11_WEIGHT_MIGRATION_KEY,
+      value: true,
+    });
+  }
+  await transaction.done;
+}
+
 export function getDatabase() {
   databasePromise ??= openDB<FitnessDatabaseSchema>(
     DATABASE_NAME,
@@ -136,6 +177,7 @@ export function getDatabase() {
     await transaction.done;
     await migrateActivityNames(database);
     await migrateDumbbellGripWeights(database);
+    await migrateSeptember11DumbbellWeights(database);
     return database;
   });
 
