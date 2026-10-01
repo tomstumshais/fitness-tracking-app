@@ -37,10 +37,49 @@ describe("database migrations", () => {
       createdAt: "2026-07-18T10:00:00.000Z",
       updatedAt: "2026-07-18T10:00:00.000Z",
     });
+    await legacy.put("fitnessEvents", {
+      id: "event:legacy-resistance",
+      date: "2026-07-19",
+      type: "resistance",
+      name: "Upper body",
+      exercises: [{
+        id: "entry:dumbbell",
+        exerciseId: "dumbbell-bench-press",
+        exerciseName: "Dumbbell Bench Press",
+        equipment: "dumbbell",
+        sets: [{
+          id: "set:event",
+          weightKg: 20,
+          repetitions: 10,
+          completed: true,
+        }],
+      }],
+      createdAt: "2026-07-19T10:00:00.000Z",
+      updatedAt: "2026-07-19T10:00:00.000Z",
+    });
+    await legacy.put("workoutDrafts", {
+      id: "draft:legacy-resistance",
+      date: "2026-07-20",
+      name: "Lower body",
+      exercises: [{
+        id: "entry:dumbbell",
+        exerciseId: "dumbbell-romanian-deadlift",
+        exerciseName: "Dumbbell Romanian Deadlift",
+        equipment: "dumbbell",
+        sets: [{
+          id: "set:draft",
+          weightKg: 24,
+          repetitions: 8,
+          completed: false,
+        }],
+      }],
+      createdAt: "2026-07-20T10:00:00.000Z",
+      updatedAt: "2026-07-20T10:00:00.000Z",
+    });
     legacy.close();
 
     const upgraded = await getDatabase();
-    expect(upgraded.version).toBe(4);
+    expect(upgraded.version).toBe(5);
     expect(upgraded.objectStoreNames.contains("workoutTemplates")).toBe(true);
     const drafts = upgraded.transaction("workoutDrafts").store;
     expect(drafts.indexNames.contains("by-source-event")).toBe(true);
@@ -51,5 +90,21 @@ describe("database migrations", () => {
     });
     expect(await upgraded.get("fitnessEvents", "event:legacy-cycling"))
       .toEqual(expect.objectContaining({ name: "Indoor cycling" }));
+    const event = await upgraded.get(
+      "fitnessEvents",
+      "event:legacy-resistance",
+    );
+    const draft = await upgraded.get(
+      "workoutDrafts",
+      "draft:legacy-resistance",
+    );
+    expect(
+      event?.type === "resistance" &&
+        event.exercises[0].sets[0].weightKg,
+    ).toBe(21);
+    expect(draft?.exercises[0].sets[0].weightKg).toBe(25);
+    expect(
+      await upgraded.get("settings", "migration:5:dumbbell-grip-weight"),
+    ).toEqual({ key: "migration:5:dumbbell-grip-weight", value: true });
   });
 });
