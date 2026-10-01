@@ -53,6 +53,17 @@ describe("database migrations", () => {
           repetitions: 10,
           completed: true,
         }],
+      }, {
+        id: "entry:lateral-raise",
+        exerciseId: "predefined:dumbbell-lateral-raise",
+        exerciseName: "Dumbbell Lateral Raise",
+        equipment: "dumbbell",
+        sets: [{
+          id: "set:lateral-raise",
+          weightKg: 5,
+          repetitions: 12,
+          completed: true,
+        }],
       }],
       createdAt: "2026-09-11T10:00:00.000Z",
       updatedAt: "2026-09-11T10:00:00.000Z",
@@ -79,7 +90,7 @@ describe("database migrations", () => {
     legacy.close();
 
     const upgraded = await getDatabase();
-    expect(upgraded.version).toBe(6);
+    expect(upgraded.version).toBe(7);
     expect(upgraded.objectStoreNames.contains("workoutTemplates")).toBe(true);
     const drafts = upgraded.transaction("workoutDrafts").store;
     expect(drafts.indexNames.contains("by-source-event")).toBe(true);
@@ -102,6 +113,10 @@ describe("database migrations", () => {
       event?.type === "resistance" &&
         event.exercises[0].sets[0].weightKg,
     ).toBe(22);
+    expect(
+      event?.type === "resistance" &&
+        event.exercises[1].sets[0].weightKg,
+    ).toBe(7);
     expect(draft?.exercises[0].sets[0].weightKg).toBe(25);
     expect(
       await upgraded.get("settings", "migration:5:dumbbell-grip-weight"),
@@ -113,6 +128,15 @@ describe("database migrations", () => {
       ),
     ).toEqual({
       key: "migration:6:2026-09-11-dumbbell-weight",
+      value: true,
+    });
+    expect(
+      await upgraded.get(
+        "settings",
+        "migration:7:2026-09-11-dumbbell-weight-repair",
+      ),
+    ).toEqual({
+      key: "migration:7:2026-09-11-dumbbell-weight-repair",
       value: true,
     });
   });

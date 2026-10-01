@@ -22,3 +22,19 @@ export function addDumbbellGripWeight<T extends ResistanceRecord>(
 
   return changed ? { ...record, exercises, updatedAt } : record;
 }
+
+export function repairMissedDumbbellWeightAdjustment<
+  T extends ResistanceRecord,
+>(record: T, updatedAt = new Date().toISOString()): T {
+  const hasUnadjustedLateralRaise = record.exercises.some((exercise) =>
+    exercise.equipment === "dumbbell" &&
+    (exercise.exerciseId === "predefined:dumbbell-lateral-raise" ||
+      exercise.exerciseName.trim().toLowerCase() ===
+        "dumbbell lateral raise") &&
+    exercise.sets.some((set) => set.weightKg === 6)
+  );
+
+  return hasUnadjustedLateralRaise
+    ? addDumbbellGripWeight(record, updatedAt)
+    : record;
+}
