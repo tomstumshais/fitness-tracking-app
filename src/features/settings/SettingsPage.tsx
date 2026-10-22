@@ -37,6 +37,7 @@ export function SettingsPage() {
           <div>
             <h2>Weight unit</h2>
             <p>Dumbbell load is recorded per dumbbell.</p>
+            <p>Barbell load includes the bar and all plates.</p>
           </div>
           <strong>kg</strong>
         </article>

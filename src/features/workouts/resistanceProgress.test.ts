@@ -83,7 +83,7 @@ describe("resistance progress", () => {
     });
   });
 
-  it("requires weight only for dumbbell exercises", () => {
+  it("requires weight for dumbbell and barbell exercises", () => {
     const baseDraft: ResistanceWorkoutDraft = {
       id: "draft",
       date: "2026-07-18",
@@ -99,6 +99,10 @@ describe("resistance progress", () => {
     })).toBe(false);
     expect(isWorkoutReady({
       ...baseDraft,
+      exercises: [{ ...previousEntry, equipment: "barbell", sets: [set] }],
+    })).toBe(false);
+    expect(isWorkoutReady({
+      ...baseDraft,
       exercises: [{ ...previousEntry, equipment: "bodyweight", sets: [set] }],
     })).toBe(true);
     expect(isWorkoutReady({
@@ -110,5 +114,22 @@ describe("resistance progress", () => {
       }],
     })).toBe(true);
     expect(formatPreviousSet(set, "resistance-band")).toBe("Band × 10");
+  });
+
+  it("compares barbell progress using total weight and repetitions", () => {
+    const previous: ResistanceExerciseEntry = {
+      ...previousEntry,
+      equipment: "barbell",
+    };
+    const current = {
+      ...previous,
+      sets: [{ ...previous.sets[0], weightKg: 25 }],
+    };
+
+    expect(formatPreviousSet(previous.sets[0], "barbell")).toBe("20 × 10");
+    expect(getProgressSummary(current, previous)).toEqual({
+      label: "+25% volume",
+      tone: "positive",
+    });
   });
 });

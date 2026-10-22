@@ -38,7 +38,9 @@ export function ResistanceSetRow(props: Props) {
         )
         : (
           <input
-            aria-label={`Set ${props.index + 1} kg per dumbbell`}
+            aria-label={`Set ${props.index + 1} ${
+              props.equipment === "barbell" ? "kg total" : "kg per dumbbell"
+            }`}
             inputMode="decimal"
             min="0.5"
             onChange={(event) => updateNumber("weightKg", event.target.value)}

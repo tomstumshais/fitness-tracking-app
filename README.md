@@ -1,7 +1,7 @@
 # Fitness Tracking App
 
 A mobile-first, local-first fitness tracker for logging running, walking,
-cardio, and resistance workouts. Resistance sessions focus on dumbbell and
+cardio, and resistance workouts. Resistance sessions support dumbbell, barbell,
 bodyweight and resistance-band exercises, with previous-set context and
 progressive overload comparisons.
 
@@ -13,6 +13,7 @@ progressive overload comparisons.
 - Uses permanent exercise identities so historical progress remains comparable.
 - Gives persisted fitness records stable IDs plus creation/update timestamps.
 - Records dumbbell weight in kilograms per dumbbell.
+- Records total barbell weight in kilograms, including the bar and plates.
 - Supports multiple completed fitness events per day.
 - Keeps components focused and generally below 100 lines.
 - Keeps persistence behind repositories and feature state, separate from UI
@@ -61,7 +62,8 @@ deno task build
 - Monday-first calendar with refresh-safe day routes
 - Migratable IndexedDB schema for exercises, completed events, resistance
   drafts, workout templates, and settings
-- Curated dumbbell, resistance-band and bodyweight exercise library
+- Curated dumbbell, barbell (including EZ-bar curls), resistance-band and
+  bodyweight exercise library
 - Search and equipment filters
 - Persistent custom exercise creation, editing, and deletion
 - Running, walking, outdoor cycling, indoor cycling, swimming, and physiotherapy
@@ -71,7 +73,7 @@ deno task build
 - Editing completed resistance workouts without changing their stable identity
 - Duplicating a completed workout into a new editable, incomplete draft
 - Set-by-set kg/repetition logging with previous-session values
-- Progressive-overload comparisons by dumbbell volume or unweighted repetitions
+- Progressive-overload comparisons by weighted volume or unweighted repetitions
 - Previous-session performance comparisons for cardio, running, and walking
 - Autosaved resistance exercise notes with previous-note context
 - Completed workout cards and calendar activity markers

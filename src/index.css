@@ -661,6 +661,10 @@ h1 {
   color: #584ac9;
   background: #eeebff;
 }
+.equipment-icon.barbell {
+  color: #275c97;
+  background: #e7f1ff;
+}
 .equipment-icon.bodyweight {
   color: #1b775b;
   background: #e4f7ef;

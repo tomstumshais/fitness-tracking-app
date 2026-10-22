@@ -30,14 +30,28 @@ describe("exercise library", () => {
     expect(screen.queryByText("Push-Up")).not.toBeInTheDocument();
 
     await user.clear(search);
+    await user.click(screen.getByRole("button", { name: "Barbell" }));
+    expect(screen.getByText("EZ-Bar Biceps Curl")).toBeInTheDocument();
+    expect(screen.getByText("EZ-Bar Reverse Curl")).toBeInTheDocument();
+    expect(screen.getByText("2 exercises")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "+ Custom exercise" }));
     await user.type(
       screen.getByRole("textbox", { name: "Exercise name" }),
-      "Dumbbell Sumo Squat",
+      "EZ-Bar Wide-Grip Curl",
+    );
+    await user.selectOptions(
+      screen.getByRole("combobox", { name: "Equipment" }),
+      "barbell",
+    );
+    await user.selectOptions(
+      screen.getByRole("combobox", { name: "Muscle group" }),
+      "arms",
     );
     await user.click(screen.getByRole("button", { name: "Save exercise" }));
 
-    expect(await screen.findByText("Dumbbell Sumo Squat")).toBeInTheDocument();
+    expect(await screen.findByText("EZ-Bar Wide-Grip Curl"))
+      .toBeInTheDocument();
+    expect(screen.getByText("3 exercises")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Custom" }));
     expect(screen.getByText("1 exercise")).toBeInTheDocument();
   });

@@ -21,9 +21,9 @@ describe("fitness backup repository", () => {
 
   it("exports and atomically restores all user-created data", async () => {
     const custom = await createCustomExercise({
-      name: "Band Pull-Apart",
-      equipment: "resistance-band",
-      muscleGroup: "shoulders",
+      name: "EZ-Bar Wide-Grip Curl",
+      equipment: "barbell",
+      muscleGroup: "arms",
     });
     const event = await createFitnessEvent({
       type: "running",
@@ -39,9 +39,9 @@ describe("fitness backup repository", () => {
       ...createdDraft,
       exercises: [{
         id: "draft-entry:backup-test",
-        exerciseId: "dumbbell-goblet-squat",
-        exerciseName: "Dumbbell Goblet Squat",
-        equipment: "dumbbell",
+        exerciseId: "predefined:ez-bar-biceps-curl",
+        exerciseName: "EZ-Bar Biceps Curl",
+        equipment: "barbell",
         notes: "Keep the chest tall",
         sets: [{
           id: "draft-set:backup-test",
@@ -58,9 +58,9 @@ describe("fitness backup repository", () => {
       name: "Home legs",
       exercises: [{
         id: "template-exercise:backup-test",
-        exerciseId: "dumbbell-goblet-squat",
-        exerciseName: "Dumbbell Goblet Squat",
-        equipment: "dumbbell",
+        exerciseId: "predefined:ez-bar-biceps-curl",
+        exerciseName: "EZ-Bar Biceps Curl",
+        equipment: "barbell",
         setCount: 3,
       }],
       createdAt: timestamp,

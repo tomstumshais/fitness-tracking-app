@@ -1,13 +1,11 @@
-export type ExerciseFilter =
-  | "all"
-  | "dumbbell"
-  | "resistance-band"
-  | "bodyweight"
-  | "custom";
+import type { Equipment } from "../../../domain/fitness.ts";
+
+export type ExerciseFilter = "all" | Equipment | "custom";
 
 const filters: { value: ExerciseFilter; label: string }[] = [
   { value: "all", label: "All" },
   { value: "dumbbell", label: "Dumbbells" },
+  { value: "barbell", label: "Barbell" },
   { value: "resistance-band", label: "Bands" },
   { value: "bodyweight", label: "Bodyweight" },
   { value: "custom", label: "Custom" },

@@ -151,6 +151,46 @@ describe("daily fitness events", () => {
     expect(comparison).toHaveTextContent("+5 min (+14%)");
   });
 
+  it("logs a barbell workout with total kg and persists it after reopening", async () => {
+    const user = userEvent.setup();
+    const view = renderDay();
+    await user.click(screen.getByRole("button", { name: "+ Add event" }));
+    await user.click(screen.getByRole("button", { name: /Resistance/ }));
+    await user.click(screen.getByRole("button", { name: "Start workout" }));
+    await user.click(
+      await screen.findByRole("button", { name: "＋ Add first exercise" }),
+    );
+    await user.click(screen.getByRole("button", { name: "Barbell" }));
+    expect(screen.getByRole("button", { name: "EZ-Bar Reverse Curl" }))
+      .toBeInTheDocument();
+    await user.click(
+      screen.getByRole("button", { name: "EZ-Bar Biceps Curl" }),
+    );
+
+    expect(screen.getByText("kg is the total weight, including the bar"))
+      .toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Finish workout" }))
+      .toBeDisabled();
+    await user.type(
+      screen.getByRole("spinbutton", { name: "Set 1 kg total" }),
+      "20",
+    );
+    await user.type(
+      screen.getByRole("spinbutton", { name: "Set 1 repetitions" }),
+      "10",
+    );
+    await user.click(screen.getByRole("button", { name: "Mark set 1 done" }));
+    await user.click(screen.getByRole("button", { name: "Finish workout" }));
+
+    expect(await screen.findByRole("article")).toHaveTextContent(
+      "EZ-Bar Biceps Curl",
+    );
+    expect(screen.getByRole("article")).toHaveTextContent("20 kg × 10");
+    view.unmount();
+    renderDay();
+    expect(await screen.findByRole("article")).toHaveTextContent("20 kg × 10");
+  });
+
   it("logs and completes a resistance workout set by set", async () => {
     const user = userEvent.setup();
     renderDay();

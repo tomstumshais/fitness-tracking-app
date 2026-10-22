@@ -72,7 +72,11 @@ export function WorkoutSetTable({ entry, onChangeSets, previous }: Props) {
         ))}
       </div>
       {requiresWeight(entry.equipment) && (
-        <p className="weight-note">kg is the weight of each dumbbell</p>
+        <p className="weight-note">
+          {entry.equipment === "barbell"
+            ? "kg is the total weight, including the bar"
+            : "kg is the weight of each dumbbell"}
+        </p>
       )}
       <WorkoutSetActions
         onAdd={addSet}

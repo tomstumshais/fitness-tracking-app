@@ -1,4 +1,10 @@
-export type Equipment = "dumbbell" | "resistance-band" | "bodyweight";
+export const equipmentTypes = [
+  "dumbbell",
+  "barbell",
+  "resistance-band",
+  "bodyweight",
+] as const;
+export type Equipment = typeof equipmentTypes[number];
 export type ExerciseSource = "predefined" | "custom";
 export type MuscleGroup =
   | "chest"

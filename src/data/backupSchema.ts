@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { equipmentTypes } from "../domain/fitness.ts";
 import type {
   Exercise,
   FitnessEvent,
@@ -50,7 +51,7 @@ const timestamp = z.string().datetime();
 const calendarDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const name = z.string().trim().min(1).max(120);
 const notes = z.string().max(2_000).optional();
-const equipment = z.enum(["dumbbell", "resistance-band", "bodyweight"]);
+const equipment = z.enum(equipmentTypes);
 const muscleGroup = z.enum([
   "chest",
   "back",

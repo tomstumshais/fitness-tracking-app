@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Equipment, Exercise } from "../../../domain/fitness.ts";
+import { equipmentTypes } from "../../../domain/fitness.ts";
+import { equipmentLabel } from "../../../domain/equipment.ts";
 import { ExercisePickerResults } from "./ExercisePickerResults.tsx";
 
 interface Props {
@@ -68,9 +70,10 @@ export function ExercisePickerDialog(props: Props) {
           />
         </label>
         <div className="filter-chips workout-filters">
-          {(["all", "dumbbell", "resistance-band", "bodyweight"] as const)
+          {(["all", ...equipmentTypes] as const)
             .map((item) => (
               <button
+                aria-pressed={equipment === item}
                 className={`filter-chip${equipment === item ? " active" : ""}`}
                 key={item}
                 onClick={() => setEquipment(item)}
@@ -78,11 +81,9 @@ export function ExercisePickerDialog(props: Props) {
               >
                 {item === "all"
                   ? "All"
-                  : item === "dumbbell"
-                  ? "Dumbbells"
                   : item === "resistance-band"
                   ? "Bands"
-                  : "Bodyweight"}
+                  : equipmentLabel(item)}
               </button>
             ))}
         </div>

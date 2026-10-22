@@ -33,6 +33,14 @@ describe("exercise repository", () => {
       }),
       expect.objectContaining({ name: "Spider Curl", equipment: "dumbbell" }),
       expect.objectContaining({
+        name: "EZ-Bar Biceps Curl",
+        equipment: "barbell",
+      }),
+      expect.objectContaining({
+        name: "EZ-Bar Reverse Curl",
+        equipment: "barbell",
+      }),
+      expect.objectContaining({
         name: "Dumbbell Single-Leg Standing Calf Raise",
         equipment: "dumbbell",
       }),
@@ -67,7 +75,9 @@ describe("exercise repository", () => {
     ]));
     expect(
       exercises.every((item) =>
-        ["dumbbell", "resistance-band", "bodyweight"].includes(item.equipment)
+        ["dumbbell", "barbell", "resistance-band", "bodyweight"].includes(
+          item.equipment,
+        )
       ),
     ).toBe(true);
   });

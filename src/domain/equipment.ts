@@ -2,12 +2,14 @@ import type { Equipment } from "./fitness.ts";
 
 const labels: Record<Equipment, string> = {
   dumbbell: "Dumbbells",
+  barbell: "Barbell",
   "resistance-band": "Resistance band",
   bodyweight: "Bodyweight",
 };
 
 const abbreviations: Record<Equipment, string> = {
   dumbbell: "DB",
+  barbell: "BB",
   "resistance-band": "RB",
   bodyweight: "BW",
 };
@@ -27,5 +29,5 @@ export function equipmentSetLabel(equipment: Equipment) {
 }
 
 export function requiresWeight(equipment: Equipment) {
-  return equipment === "dumbbell";
+  return equipment === "dumbbell" || equipment === "barbell";
 }
