@@ -1473,6 +1473,7 @@ h1 {
 }
 .exercise-picker {
   display: flex;
+  width: min(100%, 580px);
   max-height: calc(100vh - 36px);
   flex-direction: column;
 }
@@ -1481,6 +1482,8 @@ h1 {
 }
 .workout-filters {
   flex: 0 0 auto;
+  flex-wrap: wrap;
+  overflow-x: visible;
   margin: 12px 0;
 }
 
