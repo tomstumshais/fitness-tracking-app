@@ -265,6 +265,10 @@ describe("daily fitness events", () => {
       screen.getByRole("spinbutton", { name: "Set 1 repetitions" }),
       "8",
     );
+    expect(screen.getByRole("spinbutton", { name: "Set 1 kg per dumbbell" }))
+      .toHaveValue(22.5);
+    expect(screen.getByRole("spinbutton", { name: "Set 1 repetitions" }))
+      .toHaveValue(8);
     await user.click(screen.getByRole("button", { name: "Mark set 1 done" }));
     await user.click(screen.getByRole("button", { name: "Finish workout" }));
 
@@ -273,6 +277,7 @@ describe("daily fitness events", () => {
       .toBeInTheDocument();
     expect(card).toHaveTextContent("1 exercise");
     expect(card).toHaveTextContent("1 set");
+    expect(card).toHaveTextContent("22.5 kg × 8");
     expect(card).toHaveTextContent("Keep the dumbbells close to the legs");
 
     await user.click(within(card).getByRole("button", { name: "Edit" }));
@@ -307,7 +312,7 @@ describe("daily fitness events", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("spinbutton", { name: "Set 1 kg per dumbbell" }))
       .toHaveValue(null);
-    expect(screen.getByText("22.5 × 8")).toBeInTheDocument();
+    expect(await screen.findByText("22.5 × 8")).toBeInTheDocument();
     expect(screen.getByText("Previous note")).toBeInTheDocument();
     expect(screen.getByText("Keep the dumbbells close to the legs"))
       .toBeInTheDocument();
