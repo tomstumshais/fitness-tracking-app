@@ -92,7 +92,7 @@ export function getProgressSummary(
       return {
         label: "Weight increased",
         detail: `${previousWeight} → ${weight} kg`,
-        tone: "positive",
+        tone: "neutral",
       };
     }
   }

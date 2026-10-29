@@ -78,6 +78,8 @@ deno task build
   same weight, and recognize heavier sessions without volume-based regression
   labels. Additional logged sets must also reach 12 reps before an increase is
   suggested; band and bodyweight exercises show rep-target completion.
+- Marking a set Done confirms clean reps. Weight increases are informational;
+  readiness for another increase is highlighted after the rep target is met.
 - Previous-session performance comparisons for cardio, running, and walking
 - Autosaved resistance exercise notes with previous-note context
 - Completed workout cards and calendar activity markers

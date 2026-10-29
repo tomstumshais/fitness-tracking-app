@@ -47,7 +47,7 @@ function exerciseWithSets(
 }
 
 describe("resistance progress", () => {
-  it("finds the latest matching exercise and reports overload", () => {
+  it("finds the previous exercise and reports a neutral weight increase", () => {
     const draft: ResistanceWorkoutDraft = {
       id: "draft",
       date: "2026-07-18",
@@ -71,7 +71,7 @@ describe("resistance progress", () => {
     expect(getProgressSummary(current, found)).toEqual({
       label: "Weight increased",
       detail: "20 → 22.5 kg",
-      tone: "positive",
+      tone: "neutral",
     });
   });
 
@@ -150,7 +150,7 @@ describe("resistance progress", () => {
     expect(getProgressSummary(current, previous)).toEqual({
       label: "Weight increased",
       detail: "20 → 25 kg",
-      tone: "positive",
+      tone: "neutral",
     });
   });
 
@@ -184,7 +184,7 @@ describe("resistance progress", () => {
         )).toEqual({
           label: "Weight increased",
           detail: "15 → 16 kg",
-          tone: "positive",
+          tone: "neutral",
         });
       });
 
