@@ -73,7 +73,11 @@ deno task build
 - Editing completed resistance workouts without changing their stable identity
 - Duplicating a completed workout into a new editable, incomplete draft
 - Set-by-set kg/repetition logging with previous-session values
-- Progressive-overload comparisons by weighted volume or unweighted repetitions
+- Double-progression statuses for resistance workouts: build toward 3 × 12,
+  increase weight after three completed clean sets of at least 12 reps at the
+  same weight, and recognize heavier sessions without volume-based regression
+  labels. Additional logged sets must also reach 12 reps before an increase is
+  suggested; band and bodyweight exercises show rep-target completion.
 - Previous-session performance comparisons for cardio, running, and walking
 - Autosaved resistance exercise notes with previous-note context
 - Completed workout cards and calendar activity markers

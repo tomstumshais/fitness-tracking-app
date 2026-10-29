@@ -58,7 +58,7 @@ export function WorkoutHeader(props: Props) {
             ? props.editing
               ? "All sets complete · ready to save"
               : "All sets complete · ready to finish"
-            : "Enter kg/reps and mark every set done · changes save automatically"}
+            : "Enter kg/reps and mark clean sets done · changes save automatically"}
         </span>
         <button
           className="danger-text-button"

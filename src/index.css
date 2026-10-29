@@ -1049,8 +1049,8 @@ h1 {
 }
 .resistance-event-exercise {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 10px;
 }
 .resistance-event-exercise strong,
@@ -1305,6 +1305,18 @@ h1 {
   background: #f2f0f5;
   font-size: 0.65rem;
   font-weight: 750;
+}
+.resistance-progress-status {
+  display: flex;
+  max-width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+}
+.resistance-progress-detail {
+  color: var(--muted);
+  font-size: 0.65rem;
+  font-weight: 650;
 }
 .progress-label.positive {
   color: #176b50;

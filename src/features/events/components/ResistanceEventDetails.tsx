@@ -1,9 +1,7 @@
 import type { FitnessEvent, ResistanceEvent } from "../../../domain/fitness.ts";
 import { equipmentSetLabel } from "../../../domain/equipment.ts";
-import {
-  findPreviousExercise,
-  getProgressSummary,
-} from "../../workouts/resistanceProgress.ts";
+import { findPreviousExercise } from "../../workouts/resistanceProgress.ts";
+import { ResistanceProgressStatus } from "../../workouts/components/ResistanceProgressStatus.tsx";
 
 interface Props {
   event: ResistanceEvent;
@@ -28,7 +26,6 @@ export function ResistanceEventDetails({ event, events }: Props) {
           event,
           exercise.exerciseId,
         );
-        const progress = getProgressSummary(exercise, previous);
         return (
           <div className="resistance-event-exercise" key={exercise.id}>
             <div>
@@ -38,9 +35,7 @@ export function ResistanceEventDetails({ event, events }: Props) {
                 <p className="completed-exercise-note">{exercise.notes}</p>
               )}
             </div>
-            <span className={`progress-label ${progress.tone}`}>
-              {progress.label}
-            </span>
+            <ResistanceProgressStatus exercise={exercise} previous={previous} />
           </div>
         );
       })}

@@ -177,18 +177,34 @@ describe("daily fitness events", () => {
     );
     await user.type(
       screen.getByRole("spinbutton", { name: "Set 1 repetitions" }),
-      "10",
+      "12",
     );
+    expect(screen.getByLabelText("EZ-Bar Biceps Curl progress"))
+      .toHaveTextContent("0/3 sets reached 12");
     await user.click(screen.getByRole("button", { name: "Mark set 1 done" }));
+    expect(screen.getByLabelText("EZ-Bar Biceps Curl progress"))
+      .toHaveTextContent("1/3 sets reached 12");
+    await user.click(screen.getByRole("button", { name: "＋ Add set" }));
+    await user.click(screen.getByRole("button", { name: "Mark set 2 done" }));
+    await user.click(screen.getByRole("button", { name: "＋ Add set" }));
+    expect(screen.getByLabelText("EZ-Bar Biceps Curl progress"))
+      .not.toHaveTextContent("Ready to increase weight");
+    await user.click(screen.getByRole("button", { name: "Mark set 3 done" }));
+    expect(screen.getByLabelText("EZ-Bar Biceps Curl progress"))
+      .toHaveTextContent("Ready to increase weight");
     await user.click(screen.getByRole("button", { name: "Finish workout" }));
 
     expect(await screen.findByRole("article")).toHaveTextContent(
       "EZ-Bar Biceps Curl",
     );
-    expect(screen.getByRole("article")).toHaveTextContent("20 kg × 10");
+    expect(screen.getByRole("article")).toHaveTextContent("20 kg × 12");
+    expect(screen.getByLabelText("EZ-Bar Biceps Curl progress"))
+      .toHaveTextContent("Ready to increase weight");
     view.unmount();
     renderDay();
-    expect(await screen.findByRole("article")).toHaveTextContent("20 kg × 10");
+    expect(await screen.findByRole("article")).toHaveTextContent("20 kg × 12");
+    expect(screen.getByLabelText("EZ-Bar Biceps Curl progress"))
+      .toHaveTextContent("3/3 sets reached 12");
   });
 
   it("logs and completes a resistance workout set by set", async () => {

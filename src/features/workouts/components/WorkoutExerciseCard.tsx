@@ -3,8 +3,8 @@ import type {
   ResistanceSet,
 } from "../../../domain/fitness.ts";
 import { equipmentAbbreviation } from "../../../domain/equipment.ts";
-import { getProgressSummary } from "../resistanceProgress.ts";
 import { ExerciseNoteEditor } from "./ExerciseNoteEditor.tsx";
+import { ResistanceProgressStatus } from "./ResistanceProgressStatus.tsx";
 import { WorkoutSetTable } from "./WorkoutSetTable.tsx";
 
 interface Props {
@@ -18,7 +18,6 @@ interface Props {
 export function WorkoutExerciseCard(
   { entry, onChangeNotes, onChangeSets, onRemove, previous }: Props,
 ) {
-  const progress = getProgressSummary(entry, previous);
   return (
     <article className="workout-exercise-card">
       <div className="workout-exercise-heading">
@@ -27,9 +26,7 @@ export function WorkoutExerciseCard(
         </span>
         <div>
           <h2>{entry.exerciseName}</h2>
-          <span className={`progress-label ${progress.tone}`}>
-            {progress.label}
-          </span>
+          <ResistanceProgressStatus exercise={entry} previous={previous} />
         </div>
         <button
           aria-label={`Remove ${entry.exerciseName}`}
